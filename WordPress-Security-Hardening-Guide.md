@@ -86,7 +86,7 @@ The following describes how WordPress core addresses the OWASP Top 10 Web Applic
 
 ### A01:2025 — Broken Access Control
 
-WordPress provides a granular roles and capabilities system. The core API enforces permission checks before executing any privileged action. Functions like `current_user_can()` verify authorization at the function level. Administrators can further customize roles and capabilities.
+WordPress provides a granular roles and capabilities system. The core API enforces permission checks before executing any privileged action. Functions like `current_user_can()` verify authorization at the function level. Administrators can further customize roles and capabilities. HTTP requests issued by WordPress are filtered to prevent access to loopback and private IP addresses, mitigating server-side request forgery (SSRF). The HTTP API restricts requests to standard ports and provides hooks for additional filtering. SSRF — previously a standalone category (A10) in the OWASP Top 10:2021 — is classified under Broken Access Control in the 2025 edition.
 
 ### A02:2025 — Security Misconfiguration
 
@@ -122,9 +122,7 @@ While WordPress core provides limited built-in logging, the ecosystem offers rob
 
 ### A10:2025 — Mishandling of Exceptional Conditions
 
-WordPress core includes structured error handling through the `WP_Error` class and provides mechanisms to control error output in production environments (`WP_DEBUG`, `WP_DEBUG_DISPLAY`, `WP_DEBUG_LOG`). HTTP requests issued by WordPress are filtered to prevent access to loopback and private IP addresses, mitigating server-side request forgery (SSRF). The HTTP API restricts requests to standard ports and provides hooks for additional filtering.
-
-> **Note on SSRF:** Server-Side Request Forgery was a standalone category (A10) in the OWASP Top 10:2021. In the 2025 edition, SSRF has been folded into A01 (Broken Access Control). WordPress's SSRF mitigations are noted here because they remain part of the core HTTP API's exceptional condition handling, but readers should be aware that SSRF is now classified under Broken Access Control in current OWASP guidance.
+WordPress core includes structured error handling through the `WP_Error` class and provides mechanisms to control error output in production environments (`WP_DEBUG`, `WP_DEBUG_DISPLAY`, `WP_DEBUG_LOG`).
 
 ## 5. Keeping WordPress Up to Date
 
