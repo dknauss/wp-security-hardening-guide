@@ -1,5 +1,16 @@
+# System files
 .DS_Store
+*.swp
+*.swo
+*~
+
+# VS Code workspace files and settings
 *.code-workspace
-.vscode
+.vscode/
+.vscode-server/
+
+# Antigravity workspace files
+*.antigravity-workspace
+
+# This gitignore file itself
 .gitignore
-.gitattributes
