@@ -52,7 +52,7 @@ The Verizon Data Breach Investigations Report (2025) analyzed over 22,000 securi
 
 IBM's Cost of a Data Breach Report (2025) found the global average breach cost was $4.44 million. Phishing was the most common initial attack vector (16% of breaches, $4.80 million average cost), followed by supply chain compromise (15%, $4.91 million). Organizations with extensive security AI and automation had average breach costs of $3.62 million — $1.88 million less than organizations without — and identified and contained breaches 80 days faster.
 
-Both reports highlight AI as a rapidly growing factor in the threat landscape. The Verizon DBIR found that AI-assisted phishing emails have doubled over the past two years, while IBM reports that 16% of breaches now involve attackers using AI tools (37% for AI-generated phishing, 35% for deepfake-based social engineering). Shadow AI — the unsanctioned use of AI tools by employees — is an emerging cost amplifier: IBM found it added $200,000 to average breach costs and that 63% of organizations lack AI governance policies. See Section 14 for WordPress-specific GenAI security guidance.
+Both reports highlight AI as a rapidly growing factor in the threat landscape. The Verizon DBIR found that AI-assisted phishing emails have doubled over the past two years, while IBM reports that 16% of breaches now involve attackers using AI tools (37% for AI-generated phishing, 35% for deepfake-based social engineering). Shadow AI — the unsanctioned use of AI tools by employees — is an emerging cost amplifier: IBM found it added $200,000 to average breach costs, rising to $670,000 for organizations with high shadow AI prevalence, and that 63% of organizations lack AI governance policies. See Section 14 for WordPress-specific GenAI security guidance.
 
 Both reports are published annually and should be consulted for the latest figures.
 
@@ -124,6 +124,8 @@ While WordPress core provides limited built-in logging, the ecosystem offers rob
 
 WordPress core includes structured error handling through the `WP_Error` class and provides mechanisms to control error output in production environments (`WP_DEBUG`, `WP_DEBUG_DISPLAY`, `WP_DEBUG_LOG`). HTTP requests issued by WordPress are filtered to prevent access to loopback and private IP addresses, mitigating server-side request forgery (SSRF). The HTTP API restricts requests to standard ports and provides hooks for additional filtering.
 
+> **Note on SSRF:** Server-Side Request Forgery was a standalone category (A10) in the OWASP Top 10:2021. In the 2025 edition, SSRF has been folded into A01 (Broken Access Control). WordPress's SSRF mitigations are noted here because they remain part of the core HTTP API's exceptional condition handling, but readers should be aware that SSRF is now classified under Broken Access Control in current OWASP guidance.
+
 ## 5. Keeping WordPress Up to Date
 
 > **Key Principle**
@@ -137,7 +139,7 @@ Unpatched software is the most common technical root cause of WordPress compromi
 
 -   Establish a regular maintenance cycle for plugin and theme updates, with staging environment testing.
 
--   Subscribe to security advisory feeds from Patchstack, WPScan, or Wordfence to receive early notification of vulnerabilities.
+-   Subscribe to security advisory feeds from Patchstack, WPScan, or Wordfence to receive early notification of vulnerabilities. Use the Exploit Prediction Scoring System (EPSS) probability alongside CVSS severity to prioritize remediation by real-world exploitability, not theoretical severity alone. EPSS scores are increasingly reported by Patchstack and other databases alongside CVSS.
 
 -   Remove unused plugins and themes. Deactivated code can still be exploited if accessible on the server.
 
@@ -278,7 +280,7 @@ WordPress Multisite enables a single WordPress installation to serve a network o
 User authentication and session management represent the most critical—and most frequently exploited—aspects of WordPress security. The majority of enterprise WordPress breaches involve compromised user credentials or hijacked sessions.
 
 > **Current Threat Context**
-> NordVPN's Stolen Cookie Study (2024) analyzed 54 billion cookies on dark web markets. Over 9 billion (17%) were active sessions. Session hijacking, credential stuffing, and infostealer malware represent the fastest-growing attack categories across all web platforms.
+> NordVPN's Stolen Cookie Study (2024) analyzed 54 billion cookies on dark web markets; the 2025 follow-up found the number had grown to 94 billion — a 74% increase. Over 17% were active sessions. Session hijacking, credential stuffing, and infostealer malware represent the fastest-growing attack categories across all web platforms.
 
 
 ### 8.1 Multi-Factor Authentication
@@ -455,7 +457,7 @@ Technical controls alone are insufficient. The human element accounts for the ma
 
 -   Require written SLAs with hosting providers and third-party data handlers that address security, privacy, and compliance.
 
--   Establish an AI governance policy covering approved tools, acceptable use, data classification for AI inputs, and authentication requirements. IBM's Cost of a Data Breach Report (2025) found that 63% of organizations lack AI governance policies and that shadow AI incidents added $200,000 to average breach costs. See Section 14 for implementation guidance.
+-   Establish an AI governance policy covering approved tools, acceptable use, data classification for AI inputs, and authentication requirements. IBM's Cost of a Data Breach Report (2025) found that 63% of organizations lack AI governance policies and that shadow AI incidents added $200,000 to average breach costs ($670,000 for organizations with high shadow AI prevalence). See Section 14 for implementation guidance.
 
 ### 12.3 Incident Response
 
@@ -527,7 +529,7 @@ AI tools are increasingly weaponized by threat actors. The Verizon DBIR (2025) f
 
 ### 14.2 Shadow AI and Governance
 
-Shadow AI — the unsanctioned use of AI tools by employees — is an emerging organizational risk. IBM found that 20% of breached organizations experienced a shadow AI-related incident, adding $200,000 to average breach costs. The Verizon DBIR found that 15% of employees routinely access GenAI systems on corporate devices (at least once every 15 days), with 72% using non-corporate email accounts and only 17% using corporate email with integrated authentication.
+Shadow AI — the unsanctioned use of AI tools by employees — is an emerging organizational risk. IBM found that 20% of breached organizations experienced a shadow AI-related incident, adding $200,000 to average breach costs ($670,000 for organizations with high shadow AI prevalence). The Verizon DBIR found that 15% of employees routinely access GenAI systems on corporate devices (at least once every 15 days), with 72% using non-corporate email accounts and only 17% using corporate email with integrated authentication.
 
 For WordPress teams, shadow AI risks include content contributors pasting sensitive draft content into public AI tools and developers using AI code assistants that may introduce vulnerabilities or leak proprietary code. Organizations should establish an AI acceptable use policy, maintain an inventory of approved AI tools, and enforce authentication controls on any AI service used in the content workflow.
 
