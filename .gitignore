@@ -1,5 +1,5 @@
 .DS_Store
-wp-security-hardening-guide.code-workspace
+*.code-workspace
 .vscode
 .gitignore
 .gitattributes
