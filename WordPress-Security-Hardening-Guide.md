@@ -82,7 +82,7 @@ WordPress maintains a strong commitment to backward compatibility. This ensures 
 
 ## 4. OWASP Top 10 Coverage
 
-The following describes how WordPress core addresses the OWASP Top 10 Web Application Security Risks (2025 edition). Note: the official WordPress.org Security White Paper (September 2025) still references the 2013 OWASP Top 10; this document uses the current edition.
+The following describes how WordPress core addresses the OWASP Top 10 Web Application Security Risks (2025 edition).
 
 ### A01:2025 — Broken Access Control
 
