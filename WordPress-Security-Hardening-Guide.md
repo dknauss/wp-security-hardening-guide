@@ -82,7 +82,7 @@ WordPress maintains a strong commitment to backward compatibility. This ensures 
 
 ## 4. OWASP Top 10 Coverage
 
-The following describes how WordPress core addresses the OWASP Top 10 Web Application Security Risks (2025 edition).
+The following describes how WordPress core addresses the OWASP Top 10 Web Application Security Risks (2025 edition). Note: the official WordPress.org Security White Paper (September 2025) still references the 2013 OWASP Top 10; this document uses the current edition.
 
 ### A01:2025 — Broken Access Control
 
@@ -570,12 +570,10 @@ For WordPress teams, shadow AI risks include content contributors pasting sensit
 
 ## Related Documents
 
--   **NLM WordPress Benchmark** — Prescriptive, auditable hardening controls for the full WordPress stack (web server, PHP, database, application, file system). Use for compliance verification and configuration audits.
--   **WP Security Style Guide** — Principles, terminology, and formatting conventions for writing about WordPress security. Use when producing vulnerability disclosures, customer communications, or documentation.
+-   **[WordPress Security Benchmark](https://github.com/dknauss/wp-security-benchmark)** — Prescriptive, auditable hardening controls for the full WordPress stack (web server, PHP, database, application, file system). Use for compliance verification and configuration audits.
+-   **[WordPress Security Style Guide](https://github.com/dknauss/wp-security-style-guide)** — Principles, terminology, and formatting conventions for writing about WordPress security. Use when producing vulnerability disclosures, customer communications, or documentation.
 -   **WordPress Security White Paper (WordPress.org, September 2025)** — The official upstream document describing WordPress core security architecture, maintained at [developer.wordpress.org](https://developer.wordpress.org/apis/security/).
 
 ## License and Attribution
 
 This document is licensed under the [Creative Commons Attribution-ShareAlike 4.0 International License (CC BY-SA 4.0)](https://creativecommons.org/licenses/by-sa/4.0/). You may copy, redistribute, remix, transform, and build upon this material for any purpose, including commercial use, provided you give appropriate credit and distribute your contributions under the same license.
-
-**Sources and Acknowledgments:** This document incorporates guidance from the OWASP Top 10 (2025), NIST SP 800-63B, CIS Benchmarks, the Verizon Data Breach Investigations Report (2025), and IBM's Cost of a Data Breach Report (2025).
