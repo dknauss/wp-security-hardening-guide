@@ -14,7 +14,7 @@ February 16, 2026
 1. [Overview](#1-overview)
 2. [Executive Summary](#2-executive-summary)
 3. [WordPress Core Security Architecture](#3-wordpress-core-security-architecture)
-4. [OWASP Top 10 Coverage](#4-owasp-top-10-coverage)
+4. [OWASP Top 10 Coverage (2025)](#4-owasp-top-10-coverage)
 5. [Keeping WordPress Up to Date](#5-keeping-wordpress-up-to-date)
 6. [Server Hardening](#6-server-hardening)
 7. [WordPress Application Hardening](#7-wordpress-application-hardening)
