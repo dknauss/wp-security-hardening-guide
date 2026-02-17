@@ -26,7 +26,6 @@ This guide is part of a larger ecosystem of security resources:
 
 - 📊 **[WordPress Security Benchmark](https://github.com/dknauss/wp-security-benchmark)**: Auditable hardening controls for compliance and configuration audits.
 - ✍️ **[WordPress Security Style Guide](https://github.com/dknauss/wp-security-style-guide)**: Principles and terminology for writing about WordPress security effectively.
-- 🛡️ **[WordPress Security Hardening Guide (PDF and Markdown)**: The full technical document in this repository.
 
 ---
 
