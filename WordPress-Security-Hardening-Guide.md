@@ -1,13 +1,11 @@
-*White Paper*
+# WordPress Security Architecture and Hardening Guide — DRAFT
 
-# WordPress Security Architecture and Hardening Guide
 **Enterprise Best Practices and Threat Mitigation**
 
 An analysis of the security architecture, processes, and best practices of the WordPress content management system
 
-February 2026 • Version 3.1 • **Draft**
-
-Dan Knauss (2026)
+Dan Knauss
+February 16, 2026
 
 ---
 
@@ -35,7 +33,7 @@ Dan Knauss (2026)
 
 This document provides a comprehensive analysis of the WordPress core software, its security architecture, development processes, and recommended hardening practices. It is intended for developers, system administrators, and technical teams responsible for deploying and maintaining WordPress in enterprise environments.
 
-WordPress is a free and open-source content management system (CMS) licensed under the GNU General Public License (GPLv2 or later). It is the most widely used CMS in the world, powering over 40% of all websites on the internet. Its extensibility through plugins and themes, combined with a mature development community, makes it a popular choice for organizations of all sizes.
+WordPress is a free and open-source content management system (CMS) licensed under the GNU General Public License (GPLv2 or later). It is the most widely used CMS in the world, powering more than 43% of the top 10 million websites on the internet and holding a 63% CMS market share (W3Techs, September 2025). Its extensibility through plugins and themes, combined with a mature development community, makes it a popular choice for organizations of all sizes.
 
 The security information in this document reflects the state of WordPress as of version 6.9 (2026). However, the principles and architectural details described here are broadly applicable to all recent versions due to the project's strong commitment to backward compatibility.
 
@@ -48,23 +46,29 @@ The security information in this document reflects the state of WordPress as of 
 
 Since its inception in 2003, WordPress has undergone continuous security hardening. Its core software addresses common security threats, including those identified in the OWASP Top 10. The WordPress Security Team, in collaboration with the Core Leadership Team and the global community, identifies and resolves security issues in the core software distributed at WordPress.org.
 
-The current threat landscape emphasizes that the most significant risks to WordPress deployments come not from the core software itself but from unpatched third-party extensions, misconfigured environments, and compromised user accounts. According to annual data from vulnerability databases maintained by Patchstack, WPScan, and Wordfence, 90--99% of all WordPress-related vulnerabilities originate in plugins, not WordPress core or themes.
+The current threat landscape emphasizes that the most significant risks to WordPress deployments come not from the core software itself but from unpatched third-party extensions, misconfigured environments, and compromised user accounts. According to annual data from vulnerability databases maintained by Patchstack, WPScan, and Wordfence, 90–99% of all WordPress-related vulnerabilities originate in plugins, not WordPress core or themes.
 
-The Verizon Data Breach Investigations Report consistently identifies the human element—including errors, social engineering, and misuse—as a contributing factor in roughly two-thirds of breaches (68% in the 2024 edition). IBM's Cost of a Data Breach Report (2024) found the global average breach cost reached $4.88 million, a 10% year-over-year increase, with stolen or compromised credentials as the most common initial attack vector (16% of breaches). Both reports are published annually and should be consulted for the latest figures.
+The Verizon Data Breach Investigations Report (2025) analyzed over 22,000 security incidents and 12,195 confirmed breaches. It identifies the human element — including errors, social engineering, and misuse — as a contributing factor in approximately 60% of breaches. Credential abuse remains the most common initial access vector (22%), followed by exploitation of vulnerabilities (20%, a 34% year-over-year increase driven largely by edge device and VPN appliance compromises). Third-party involvement in breaches has doubled to 30%, reinforcing the supply chain risks described in Section 11. Ransomware was present in 44% of breaches (up from 32%), though the median ransom payment declined to $115,000 as 64% of victim organizations refused to pay.
 
-These findings underscore the need for enterprise WordPress teams to adopt robust user management practices, enforce strong authentication, and cultivate a security-first organizational culture.
+IBM's Cost of a Data Breach Report (2025) found the global average breach cost was $4.44 million. Phishing was the most common initial attack vector (16% of breaches, $4.80 million average cost), followed by supply chain compromise (15%, $4.91 million). Organizations with extensive security AI and automation had average breach costs of $3.62 million — $1.88 million less than organizations without — and identified and contained breaches 80 days faster.
+
+Both reports highlight AI as a rapidly growing factor in the threat landscape. The Verizon DBIR found that AI-assisted phishing emails have doubled over the past two years, while IBM reports that 16% of breaches now involve attackers using AI tools (37% for AI-generated phishing, 35% for deepfake-based social engineering). Shadow AI — the unsanctioned use of AI tools by employees — is an emerging cost amplifier: IBM found it added $200,000 to average breach costs and that 63% of organizations lack AI governance policies. See Section 14 for WordPress-specific GenAI security guidance.
+
+Both reports are published annually and should be consulted for the latest figures.
+
+These findings underscore the need for enterprise WordPress teams to adopt robust user management practices, enforce strong authentication, govern the use of AI tools, and cultivate a security-first organizational culture.
 
 ## 3. WordPress Core Security Architecture
 
 ### 3.1 The WordPress Security Team
 
-The WordPress Security Team comprises approximately 50 experts, including lead developers and security researchers. Many are employees of Automattic (operators of WordPress.com and WordPress VIP), while others work independently in the web security field. The team consults with well-known security researchers and hosting companies.
+The WordPress Security Team comprises approximately 50 experts, including lead developers and security researchers, some of whom are Automattic employees (see [WordPress.org Security page](https://wordpress.org/about/security/)). The team collaborates with well-known security researchers, hosting companies, and other stakeholders in the web security field.
 
-The team practices responsible disclosure. Potential vulnerabilities can be reported to security@wordpress.org. Reports are acknowledged upon receipt, and the team works to verify, assess severity, and develop patches. Critical fixes may be pushed as immediate security releases.
+The team practices responsible disclosure. Potential vulnerabilities can be reported through the [WordPress HackerOne program](https://hackerone.com/wordpress). Reports are acknowledged upon receipt, and the team works to verify, assess severity, and develop patches. Critical fixes may be pushed as immediate security releases.
 
 ### 3.2 The Release Cycle
 
-Each WordPress release cycle lasts approximately four months and follows a structured process: planning and feature scoping, active development, beta releases with community testing, release candidates with string freezes, and final launch. Major versions (e.g., 6.5, 6.6) may add features and APIs, while minor versions (e.g., 6.5.1, 6.5.2) are reserved exclusively for security and critical bug fixes.
+Each WordPress release cycle lasts approximately four to five months and follows a structured process: planning and feature scoping, active development, beta releases with community testing, release candidates with string freezes, and final launch. Major versions (e.g., 6.5, 6.6) may add features and APIs, while minor versions (e.g., 6.5.1, 6.5.2) are reserved exclusively for security and critical bug fixes.
 
 ### 3.3 Automatic Background Updates
 
@@ -78,47 +82,47 @@ WordPress maintains a strong commitment to backward compatibility. This ensures 
 
 ## 4. OWASP Top 10 Coverage
 
-The following describes how WordPress core addresses the OWASP Top 10 Web Application Security Risks (2021 edition, the most recent as of this publication).
+The following describes how WordPress core addresses the OWASP Top 10 Web Application Security Risks (2025 edition). Note: the official WordPress.org Security White Paper (September 2025) still references the 2013 OWASP Top 10; this document uses the current edition.
 
-### A01: Broken Access Control
+### A01:2025 — Broken Access Control
 
 WordPress provides a granular roles and capabilities system. The core API enforces permission checks before executing any privileged action. Functions like `current_user_can()` verify authorization at the function level. Administrators can further customize roles and capabilities.
 
-### A02: Cryptographic Failures
-
-As of WordPress 6.8, user passwords are hashed using bcrypt by default, a significant security improvement over the previous phpass/MD5 method. Sites with the necessary server support (PHP 7.2+ with the sodium or argon2 extension) can enable Argon2id hashing via a core filter for even stronger resistance to brute-force and GPU-accelerated attacks. WordPress supports HTTPS enforcement through configuration constants and provides salting via security keys defined in `wp-config.php`. Sensitive data like user email addresses and private content is access-controlled through the permissions system.
-
-### A03: Injection
-
-WordPress provides the `$wpdb->prepare()` method for parameterized database queries, preventing SQL injection. Input sanitization and output escaping functions (`esc_html()`, `esc_attr()`, `wp_kses()`, etc.) are available throughout the API. File upload restrictions limit the types of files that can be uploaded.
-
-### A04: Insecure Design
-
-WordPress core follows security-by-default principles. Default settings are evaluated by the core team for security implications. The REST API requires authentication for sensitive endpoints. The block editor (Gutenberg) sanitizes content at multiple levels.
-
-### A05: Security Misconfiguration
+### A02:2025 — Security Misconfiguration
 
 WordPress provides configuration constants (in `wp-config.php`) to harden installations: `DISALLOW_FILE_EDIT`, `DISALLOW_FILE_MODS`, `FORCE_SSL_ADMIN`, and others. The core team publishes documentation and best practices for secure server configuration.
 
-### A06: Vulnerable and Outdated Components
+### A03:2025 — Software Supply Chain Failures
 
-The core team monitors and updates bundled libraries (jQuery, TinyMCE, PHPMailer, etc.). Automatic background updates ensure core patches reach sites promptly. The plugin/theme repository team reviews submissions and can remove or update vulnerable components.
+The core team monitors and updates bundled libraries (jQuery, TinyMCE, PHPMailer, etc.). Automatic background updates ensure core patches reach sites promptly. The plugin/theme repository team reviews submissions and can remove or update vulnerable components. See also Section 11 (Supply Chain Security) for extended guidance on managing the WordPress extension ecosystem.
 
-### A07: Identification and Authentication Failures
+### A04:2025 — Cryptographic Failures
 
-WordPress manages authentication server-side with salted, hashed passwords and secure session cookies. Sessions are destroyed on logout. The platform supports application passwords for API authentication and is compatible with two-factor authentication plugins.
+As of WordPress 6.8, user passwords are hashed using bcrypt by default, with SHA-384 pre-hashing to address bcrypt's 72-byte input limit. Application passwords, password reset keys, and other security tokens use the BLAKE2b algorithm via Sodium. Sites with the necessary server support (PHP 7.2+ with the sodium or argon2 extension) can enable Argon2id hashing via the `wp_hash_password` core filter for even stronger resistance to brute-force and GPU-accelerated attacks. WordPress supports HTTPS enforcement through configuration constants and provides salting via security keys defined in `wp-config.php`. Sensitive data like user email addresses and private content is access-controlled through the permissions system.
 
-### A08: Software and Data Integrity Failures
+### A05:2025 — Injection
+
+WordPress provides the `$wpdb->prepare()` method for parameterized database queries, preventing SQL injection. Input sanitization and output escaping functions (`esc_html()`, `esc_attr()`, `wp_kses()`, etc.) are available throughout the API. File upload restrictions limit the types of files that can be uploaded.
+
+### A06:2025 — Insecure Design
+
+WordPress core follows security-by-default principles. Default settings are evaluated by the core team for security implications. The REST API requires authentication for sensitive endpoints. The block editor (Gutenberg) sanitizes content at multiple levels.
+
+### A07:2025 — Authentication Failures
+
+WordPress manages authentication server-side with salted, hashed passwords and secure session cookies. Sessions are destroyed on logout. The platform supports application passwords for REST API and XML-RPC authentication — these provide secure, scoped credentials that are revocable and not valid for Dashboard login, though they bypass 2FA and should be managed carefully (see Section 8). WordPress is compatible with two-factor authentication plugins.
+
+### A08:2025 — Software or Data Integrity Failures
 
 WordPress verifies the integrity of updates through cryptographic signatures. The update system checks package authenticity before applying changes. Plugin and theme updates go through the official repository with hash verification.
 
-### A09: Security Logging and Monitoring Failures
+### A09:2025 — Security Logging and Alerting Failures
 
 While WordPress core provides limited built-in logging, the ecosystem offers robust audit logging solutions (e.g., WP Activity Log). Enterprise hosting platforms typically provide comprehensive server-level logging, SIEM integration, and monitoring.
 
-### A10: Server-Side Request Forgery (SSRF)
+### A10:2025 — Mishandling of Exceptional Conditions
 
-HTTP requests issued by WordPress are filtered to prevent access to loopback and private IP addresses. The HTTP API restricts requests to standard ports and provides hooks for additional filtering.
+WordPress core includes structured error handling through the `WP_Error` class and provides mechanisms to control error output in production environments (`WP_DEBUG`, `WP_DEBUG_DISPLAY`, `WP_DEBUG_LOG`). HTTP requests issued by WordPress are filtered to prevent access to loopback and private IP addresses, mitigating server-side request forgery (SSRF). The HTTP API restricts requests to standard ports and provides hooks for additional filtering.
 
 ## 5. Keeping WordPress Up to Date
 
@@ -163,7 +167,7 @@ The web server (Nginx or Apache) serves as the first line of defense. Organizati
 
 -   **Block PHP Execution in Uploads:** Explicitly deny PHP processing in the `wp-content/uploads/` directory to prevent the execution of malicious files uploaded through potential vulnerabilities.
 
--   **Rate Limiting:** Implement rate limiting at the web server level for `wp-login.php` and `xmlrpc.php` to throttle automated brute-force attempts.
+-   **Rate Limiting:** Implement rate limiting at the web server level for `wp-login.php`, `xmlrpc.php`, and the REST API (`/wp-json/`) to throttle automated brute-force and resource exhaustion attempts.
 
 ### 6.2 Firewall and Network Configuration
 
@@ -178,6 +182,10 @@ The web server (Nginx or Apache) serves as the first line of defense. Organizati
 ### 6.3 PHP and Server-Side Components
 
 -   Keep PHP on an actively supported version. As of 2026, PHP 8.2 is in security-only support and PHP 8.3+ is recommended for new deployments.
+
+-   Harden the PHP runtime: set `expose_php = Off` to prevent version disclosure in HTTP headers, set `display_errors = Off` and `log_errors = On` in production to prevent leaking file paths and database details, disable dangerous functions via `disable_functions` (e.g., `exec`, `passthru`, `shell_exec`, `system`, `proc_open`, `popen`), and restrict PHP file operations with `open_basedir` to the WordPress installation directory and required system paths. For high-security environments, consider the Snuffleupagus PHP security extension to mitigate `eval()` and provide additional hardening beyond `disable_functions`.
+
+-   Configure PHP session security: set `session.cookie_secure = 1`, `session.cookie_httponly = 1`, `session.cookie_samesite = Lax`, `session.use_strict_mode = 1`, and `session.use_only_cookies = 1`.
 
 -   Keep all server-side components (web server, database server, operating system) on supported, actively maintained versions.
 
@@ -217,6 +225,10 @@ Set the following security-related constants in `wp-config.php`:
 
 -   `WP_AUTO_UPDATE_CORE` — Controls automatic core updates (set to `true` or `'minor'`).
 
+-   `WP_DEBUG` — Must be `false` in production. Set `WP_DEBUG_DISPLAY` to `false` as well. If `WP_DEBUG_LOG` is enabled, direct the log to a non-public path (e.g., `/var/log/wordpress/debug.log`) to prevent exposure of file paths, database queries, and PHP errors.
+
+-   **Authentication Keys and Salts** — All eight authentication keys and salts (`AUTH_KEY`, `SECURE_AUTH_KEY`, `LOGGED_IN_KEY`, `NONCE_KEY`, and their corresponding `_SALT` counterparts) must be set to unique, random values. Generate them via `curl -s https://api.wordpress.org/secret-key/1.1/salt/`. Placeholder values (`'put your unique phrase here'`) must be replaced before deployment.
+
 ### 7.2 Disable Unused Features
 
 -   Disable XML-RPC if not required (common attack vector for brute-force amplification).
@@ -227,13 +239,19 @@ Set the following security-related constants in `wp-config.php`:
 
 -   Prevent username enumeration via the REST API and author archives.
 
--   Restrict or disable wp-cron.php in favor of a system-level cron job.
+-   Restrict unauthenticated REST API access to prevent information leakage about site structure, content, and users. Allow specific public endpoints only where required (e.g., for decoupled front-ends or front-end search).
+
+-   Disable the built-in `wp-cron.php` pseudo-cron by setting `DISABLE_WP_CRON` to `true` in `wp-config.php`, and replace it with a system-level cron job (e.g., `*/5 * * * * cd /path/to/wordpress && wp cron event run --due-now`). Block direct external access to `wp-cron.php` at the web server level. The built-in pseudo-cron fires on page loads, making execution timing unpredictable and exposing an additional PHP endpoint to resource exhaustion attacks.
 
 ### 7.3 Database Security
 
 -   Use a unique, non-default database table prefix.
 
--   Grant the database user only the minimum required privileges (SELECT, INSERT, UPDATE, DELETE for normal operations).
+-   Grant the database user only the minimum required privileges: SELECT, INSERT, UPDATE, DELETE, CREATE, ALTER, INDEX, and DROP on the WordPress database only. CREATE, ALTER, INDEX, and DROP are needed for plugin table creation, schema updates, and core updates. Some plugins may also require CREATE TEMPORARY TABLES or LOCK TABLES — add only when verified necessary.
+
+-   Configure MySQL/MariaDB to listen only on localhost (`bind-address = 127.0.0.1`) or a Unix socket. Remote TCP connections should be disabled unless required and tunneled through SSH or a VPN.
+
+-   Enable slow query logging (`slow_query_log = 1`) for forensic analysis and intrusion detection. General query logging incurs significant I/O overhead and should be used selectively or only during investigations.
 
 -   Encrypt sensitive data stored in the database, including API keys, SMTP credentials, and payment gateway tokens.
 
@@ -267,7 +285,7 @@ User authentication and session management represent the most critical—and mos
 
 -   Require multi-factor authentication (MFA) or two-factor authentication (2FA) for all administrator and editor accounts.
 
--   Use TOTP-based authentication apps (e.g., Authy, Google Authenticator) or hardware security keys (WebAuthn/FIDO2).
+-   Use TOTP-based authentication apps (e.g., Authy, Google Authenticator), hardware security keys (WebAuthn/FIDO2), or passkeys for phishing-resistant passwordless authentication. Passkey support in WordPress core is anticipated in a future release; plugins currently provide this capability.
 
 -   Do not use SMS-based 2FA, as it is vulnerable to SIM-swapping attacks.
 
@@ -370,6 +388,8 @@ Robust backup and recovery capabilities are essential. In the event of a securit
 
 WordPress's extensibility through plugins and themes introduces supply chain risk. Unlike sandboxed extension models found in some platforms, WordPress's plugin architecture executes all third-party code at the same privilege level as core, with full access to the database, filesystem, and WordPress APIs. There is no built-in capability isolation between plugins. This design maximizes flexibility and performance but amplifies the impact of any single compromised or vulnerable extension, making the vetting and management of extensions a critical security concern.
 
+The scale of this risk is growing. The Verizon DBIR (2025) found that third-party involvement in breaches has doubled to 30%, driven in part by exploitation of software supply chain dependencies and partner-connected access. IBM's Cost of a Data Breach Report (2025) found supply chain compromise to be the second most common initial attack vector (15% of breaches) with an average cost of $4.91 million — the highest cost amplifying factor across all breach categories. The Verizon report also found that exploitation of vulnerabilities in edge devices and VPN appliances increased from 3% to 22% of vulnerability-related breaches, with a median remediation time of 32 days and only 54% of affected devices fully patched during the reporting period. These trends are directly relevant to WordPress environments that rely on third-party plugins, themes, and hosting infrastructure.
+
 ### 11.1 Software Bill of Materials (SBOM)
 
 In response to increasing software supply chain attacks, enterprise organizations should maintain a Software Bill of Materials (SBOM) for their WordPress deployments. An SBOM is a formal, machine-readable inventory of all software components, their versions, and their relationships.
@@ -435,6 +455,8 @@ Technical controls alone are insufficient. The human element accounts for the ma
 
 -   Require written SLAs with hosting providers and third-party data handlers that address security, privacy, and compliance.
 
+-   Establish an AI governance policy covering approved tools, acceptable use, data classification for AI inputs, and authentication requirements. IBM's Cost of a Data Breach Report (2025) found that 63% of organizations lack AI governance policies and that shadow AI incidents added $200,000 to average breach costs. See Section 14 for implementation guidance.
+
 ### 12.3 Incident Response
 
 Every enterprise WordPress deployment should have a documented incident response plan. A structured approach reduces recovery time and limits damage. Follow an established framework such as NIST SP 800-61:
@@ -453,7 +475,7 @@ Every enterprise WordPress deployment should have a documented incident response
 
 ### 12.4 Building a Security-First Culture
 
-The Gartner Security and Risk Management Summit (2024) concluded that third-party breaches are inevitable. Organizations should focus on resilience in addition to prevention, and on fostering behavioral change over mere awareness:
+The Gartner Security and Risk Management Summit (2024) concluded that third-party breaches are inevitable, and IBM's Cost of a Data Breach Report (2025) confirms this: 65% of breached organizations reported they had not fully recovered. Organizations should focus on resilience in addition to prevention, and on fostering behavioral change over mere awareness:
 
 -   Train teams with simulated breach scenarios and tabletop exercises.
 
@@ -487,20 +509,36 @@ WordPress can be installed on virtually any server environment, but the hosting 
 -   Managed, automated patching for the full server stack (OS, PHP, database, web server).
 -   Multiple upstream security layers (network-level DDoS mitigation, WAF, intrusion detection).
 -   Automated, offsite backups with tested recovery procedures.
--   Relevant certifications: SOC 2, PCI DSS, GDPR compliance, and for government/education, FedRAMP or equivalent.
+-   Relevant certifications: SOC 2, PCI DSS, GDPR-aligned data processing agreements, and for government/education, FedRAMP or equivalent.
 -   An immutable filesystem where applicable, preventing runtime file modifications.
 
 Leading enterprise WordPress hosts—including WordPress VIP, WP Engine, and Pantheon—hold certifications such as SOC 2, PCI DSS, and ISO 27001. WordPress VIP additionally holds FedRAMP authorization for United States federal projects. When evaluating hosting providers, verify that their specific certifications match your organization's compliance requirements.
 
 ## 14. Generative AI Security in WordPress
 
-As organizations integrate Generative AI (GenAI) into their WordPress workflows—for content generation, chat interfaces, and automated site management—new security considerations emerge.
+As organizations integrate Generative AI (GenAI) into their WordPress workflows — for content generation, chat interfaces, and automated site management — new security considerations emerge. These risks are no longer theoretical: IBM's Cost of a Data Breach Report (2025) found that 13% of organizations experienced a breach involving an AI model or application, and 97% of those breaches involved AI systems lacking proper access controls. The most common AI-specific attack types were supply chain compromise of AI components (30%), model inversion (24%), model evasion (21%), prompt injection (17%), and data poisoning (15%).
+
+### 14.1 AI as an Attack Vector
+
+AI tools are increasingly weaponized by threat actors. The Verizon DBIR (2025) found that AI-assisted malicious emails have doubled over the past two years. IBM reports that 16% of breaches now involve attackers using AI, with 37% employing AI-generated phishing and 35% using deepfake-based social engineering. For WordPress sites, this means:
+
+-   **AI-enhanced phishing and social engineering** targeting WordPress administrators and users will be more convincing and harder to detect. Training and awareness programs must account for AI-generated content.
+-   **Automated vulnerability discovery** using AI may accelerate the exploitation window for WordPress plugin vulnerabilities, increasing the urgency of timely patching and virtual patching.
+
+### 14.2 Shadow AI and Governance
+
+Shadow AI — the unsanctioned use of AI tools by employees — is an emerging organizational risk. IBM found that 20% of breached organizations experienced a shadow AI-related incident, adding $200,000 to average breach costs. The Verizon DBIR found that 15% of employees routinely access GenAI systems on corporate devices (at least once every 15 days), with 72% using non-corporate email accounts and only 17% using corporate email with integrated authentication.
+
+For WordPress teams, shadow AI risks include content contributors pasting sensitive draft content into public AI tools and developers using AI code assistants that may introduce vulnerabilities or leak proprietary code. Organizations should establish an AI acceptable use policy, maintain an inventory of approved AI tools, and enforce authentication controls on any AI service used in the content workflow.
+
+### 14.3 Securing AI Integrations in WordPress
 
 -   **Data Privacy:** Ensure that sensitive site data or user information is not inadvertently sent to LLM providers during prompt processing. Use private or enterprise-tier AI services that guarantee data will not be used for model training.
--   **Prompt Injection:** Sanitize and validate all user inputs used in AI prompts to prevent injection attacks that could trick the AI into revealing sensitive information or executing unauthorized commands.
+-   **Prompt Injection:** Sanitize and validate all user inputs used in AI prompts to prevent injection attacks that could trick the AI into revealing sensitive information or executing unauthorized commands. This applies to AI-powered chatbots, search features, and content generation tools integrated with WordPress.
 -   **Output Sanitization:** Treat GenAI-generated content as untrusted user input. Always sanitize and escape AI outputs before displaying them on the site or executing them as code (e.g., in automated site management tools).
+-   **Access Controls for AI Systems:** Implement proper authentication and authorization for all AI model endpoints and APIs. IBM found that 97% of AI-related breaches involved systems lacking proper access controls — apply the same role-based access control principles used for WordPress itself to any AI integrations.
 -   **Copyright and Compliance:** Monitor AI-generated content for copyright compliance and ensure that AI-assisted workflows align with organizational and legal disclosure requirements.
--   **API Key Management:** Securely store and manage API keys for GenAI services. Never expose keys in client-side code and rotate them regularly.
+-   **API Key Management:** Securely store and manage API keys for GenAI services. Never expose keys in client-side code and rotate them regularly. Store keys in `wp-config.php` constants or environment variables, not in the database where they may be exposed through SQL injection or backup leaks.
 
 ## 15. Additional Resources
 
@@ -513,7 +551,7 @@ As organizations integrate Generative AI (GenAI) into their WordPress workflows�
 
 ### 15.2 Threat Intelligence and Industry Reports
 
--   [OWASP Top 10 Web Application Security Risks](https://owasp.org/www-project-top-ten/)
+-   [OWASP Top 10:2025 Web Application Security Risks](https://owasp.org/Top10/2025/)
 -   [Verizon Data Breach Investigations Report](https://www.verizon.com/business/resources/reports/dbir/)
 -   [IBM X-Force Threat Intelligence Index](https://www.ibm.com/reports/threat-intelligence)
 -   [IBM Cost of a Data Breach Report](https://www.ibm.com/reports/data-breach)
@@ -530,8 +568,14 @@ As organizations integrate Generative AI (GenAI) into their WordPress workflows�
 -   [KnowBe4: Security Culture](https://www.knowbe4.com/security-culture)
 -   [NIST: Users Are Not Stupid — Six Cyber Security Pitfalls Overturned](https://www.nist.gov/)
 
-**License**
+## Related Documents
 
-This document is licensed under the Creative Commons Attribution-ShareAlike 4.0 International License (CC BY-SA 4.0). You may copy, redistribute, remix, transform, and build upon this material for any purpose, including commercial use, provided you give appropriate credit and distribute your contributions under the same license.
+-   **NLM WordPress Benchmark** — Prescriptive, auditable hardening controls for the full WordPress stack (web server, PHP, database, application, file system). Use for compliance verification and configuration audits.
+-   **WP Security Style Guide** — Principles, terminology, and formatting conventions for writing about WordPress security. Use when producing vulnerability disclosures, customer communications, or documentation.
+-   **WordPress Security White Paper (WordPress.org, September 2025)** — The official upstream document describing WordPress core security architecture, maintained at [developer.wordpress.org](https://developer.wordpress.org/apis/security/).
 
-The original WordPress Security White Paper by Sara Rosso and contributors was released under CC0 1.0 Universal Public Domain Dedication.
+## License and Attribution
+
+This document is licensed under the [Creative Commons Attribution-ShareAlike 4.0 International License (CC BY-SA 4.0)](https://creativecommons.org/licenses/by-sa/4.0/). You may copy, redistribute, remix, transform, and build upon this material for any purpose, including commercial use, provided you give appropriate credit and distribute your contributions under the same license.
+
+**Sources and Acknowledgments:** This document incorporates guidance from the OWASP Top 10 (2025), NIST SP 800-63B, CIS Benchmarks, the Verizon Data Breach Investigations Report (2025), and IBM's Cost of a Data Breach Report (2025).
