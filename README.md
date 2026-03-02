@@ -56,29 +56,9 @@ To get the most out of this repository:
 
 ---
 
-### Document Provenance, Accuracy, and the Role of LLMs
+## AI-Assisted Editorial Process
 
-**Author's Note:** This document originates from a personal attempt to collect and collate best practices in WordPress security at the application and server level, from 2021 to 2025. While challenging enough on its own, subsequently maintaining accuracy and making appropriate updates requires more eyes on the effort. This editorial effort requires a significant time investment from technical specialists and generalists. Fortunately, as of late 2025, frontier LLMs have reached a level of reliability and verifiability that can achieve excellent results in mere minutes, if guided by a capable human. As a result, this document and those associated with it by reference in other repositories reflect two layers of history: 1) my original "manual" synthesis of sources and models, and 3) the current AI-assisted revisions. 
-
-To achieve the current revision, I deployed three different frontier models (Gemini 3.1 Pro, GPT 5.3 Codex, and Claude Opus 4.6) to independently iterate through the following processes: 
-
-1. Compare the four related documents in this series: the present, practical advisory guide in this repository; the compliance-oriented benchmark; the operational runbook; and the editorial style guide.
-
-2. Identify not only factual errors and outdated or context-inappropriate information but also any significant misalignments or disagreements between these documents internally and authoritative external sources on any points, from technical descriptions and prescriptions, code examples, and stylistic matters of voice and tone. 
-
-In this step, the order of authority is:
-
-  * WordPress Advanced Administration Handbook, specifically the Security and Security Hardening sections.
-  * WordPress code references and core source code.
-  * Supplemental authoritative sources like MDN and OWASP for technical matters not specifically tied to WordPress.
-
-This results in three slightly different recommended revision plans.
-
-3. After personally reviewing the results from all three models, I instructed Claude to compare them and synthesize a draft toward the final revision plan. Claude was also invited to raise any "questionable judgments." 
-
-Claude is the primary model with access to my own archive of industry sources, IDEs, coding standards, WordPress skills, and other software development resources. Drawing on this material, its own training, and its independent access to online sources, Claude also uses the style guide to harmonize them stylistically, while also updating the style guide's glossary to cover terms and concepts in the technical documents. The style guide also defines a philosophy and ethical perspective on security, vulnerability, and trust in an open source context. Claude uses this orientation to evaluate and question all new material and revisions that are introduced. This leads, inevitably, to an editorial dialogue. 
-   
-4. I reviewed and approved, modified, or rejected each recommended revision in the final plan, which Claude then implemented.
+This document and the three related documents in this series are revised with the assistance of frontier LLMs. Multiple models independently review all four documents for factual errors, outdated guidance, and cross-document misalignments, with the WordPress Advanced Administration Handbook as primary authority. A human editor reviews, approves, or rejects every recommended change before it is applied. For the full methodology, see **[AI-Assisted Documentation Processes](https://github.com/dknauss/ai-assisted-docs)**.
 
 ---
 
