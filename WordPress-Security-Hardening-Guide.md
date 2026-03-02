@@ -1,35 +1,9 @@
-# WordPress Security Architecture and Hardening Guide
-
-**Enterprise Best Practices and Threat Mitigation**
-
-An analysis of the security architecture, processes, and best practices of the WordPress content management system
-
-[Dan Knauss](https://dan.knauss.ca/)
-
-March 1, 2026
-
-Version 1.0
-
 ---
-
-## Contents
-
-1. [Overview](#1-overview)
-2. [Executive Summary](#2-executive-summary)
-3. [WordPress Core Security Architecture](#3-wordpress-core-security-architecture)
-4. [OWASP Top 10 Coverage (2025)](#4-owasp-top-10-coverage)
-5. [Keeping WordPress Up to Date](#5-keeping-wordpress-up-to-date)
-6. [Server Hardening](#6-server-hardening)
-7. [WordPress Application Hardening](#7-wordpress-application-hardening)
-8. [User Authentication and Session Security](#8-user-authentication-and-session-security)
-9. [Security Plugins and Monitoring](#9-security-plugins-and-monitoring)
-10. [Backup and Recovery](#10-backup-and-recovery)
-11. [Supply Chain Security](#11-supply-chain-security)
-12. [Organizational Security Practices](#12-organizational-security-practices)
-13. [The Role of the Hosting Provider](#13-the-role-of-the-hosting-provider)
-14. [Generative AI Security in WordPress](#14-generative-ai-security-in-wordpress)
-15. [Additional Resources](#15-additional-resources)
-
+title: "WordPress Security Architecture and Hardening Guide"
+subtitle: "Enterprise Best Practices and Threat Mitigation"
+author: "General Editor: Dan Knauss"
+date: "March 2, 2026"
+version: "1.0"
 ---
 
 ## 1. Overview
