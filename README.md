@@ -56,6 +56,13 @@ To get the most out of this repository:
 
 ---
 
+## Contributors
+
+- [Dan Knauss](https://dan.knauss.ca) — author, editor
+- [Claude](https://claude.ai) (Anthropic) — review, revision, cross-document alignment
+- [Gemini](https://gemini.google.com) (Google) — independent review and revision planning
+- [GPT-5 Codex](https://openai.com) (OpenAI) — independent review and revision planning
+
 ## AI-Assisted Editorial Process
 
 This document and the three related documents in this series are revised with the assistance of frontier LLMs. Multiple models independently review all four documents for factual errors, outdated guidance, and cross-document misalignments, with the WordPress Advanced Administration Handbook as primary authority. A human editor reviews, approves, or rejects every recommended change before it is applied. For the full methodology, see **[AI-Assisted Documentation Processes](https://github.com/dknauss/ai-assisted-docs)**.
