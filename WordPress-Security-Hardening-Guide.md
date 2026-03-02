@@ -1,11 +1,14 @@
-# WordPress Security Architecture and Hardening Guide — DRAFT
+# WordPress Security Architecture and Hardening Guide
 
 **Enterprise Best Practices and Threat Mitigation**
 
 An analysis of the security architecture, processes, and best practices of the WordPress content management system
 
-Dan Knauss
-February 16, 2026
+[Dan Knauss](https://dan.knauss.ca/)
+
+March 1, 2026
+
+Version 1.0
 
 ---
 
