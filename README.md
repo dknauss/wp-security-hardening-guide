@@ -68,11 +68,15 @@ To achieve the current revision, I deployed three different frontier models (Gem
 
 In this step, the order of authority is:
 
-  1. WordPress Advanced Administration Handbook, specifically the Security and Security Hardening sections.
-  2. WordPress code references and core source code.
-  3. Supplemental authoritative sources like MDN and OWASP for technical matters not specifically tied to WordPress.
+  * WordPress Advanced Administration Handbook, specifically the Security and Security Hardening sections.
+  * WordPress code references and core source code.
+  * Supplemental authoritative sources like MDN and OWASP for technical matters not specifically tied to WordPress.
 
-3. After personally reviewing the results, I instructed Claude to synthesize a revision plan. Claude was also invited to raise any "questionable judgments." Claude is the primary model with access to my own archive of industry sources, IDEs, coding standards, WordPress skills, and other software development resources. Drawing on this material, its own training, and its independent access to online sources, Claude also uses the style guide to harmonize them stylistically, while also updating the style guide's glossary to cover terms and concepts in the technical documents. The style guide also defines a philosophy and ethical perspective on security, vulnerability, and trust in an open source context. Claude uses this orientation to evaluate and question all new material and revisions that are introduced.
+This results in three slightly different recommended revision plans.
+
+3. After personally reviewing the results from all three models, I instructed Claude to compare them and synthesize a draft toward the final revision plan. Claude was also invited to raise any "questionable judgments." 
+
+Claude is the primary model with access to my own archive of industry sources, IDEs, coding standards, WordPress skills, and other software development resources. Drawing on this material, its own training, and its independent access to online sources, Claude also uses the style guide to harmonize them stylistically, while also updating the style guide's glossary to cover terms and concepts in the technical documents. The style guide also defines a philosophy and ethical perspective on security, vulnerability, and trust in an open source context. Claude uses this orientation to evaluate and question all new material and revisions that are introduced. This leads, inevitably, to an editorial dialogue. 
    
 4. I reviewed and approved, modified, or rejected each recommended revision in the final plan, which Claude then implemented.
 
