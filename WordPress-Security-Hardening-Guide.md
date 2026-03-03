@@ -206,9 +206,9 @@ Set the following security-related constants in `wp-config.php`:
 
 ### 7.2 Disable Unused Features
 
--   Disable XML-RPC if not required (common attack vector for brute-force amplification). WordPress core disables the loading of custom XML entities to prevent XML eXternal Entity (XXE) and entity expansion attacks, but disabling XML-RPC entirely removes the endpoint from the attack surface.
+-   **Disable XML-RPC** if not required (common attack vector for brute-force amplification). WordPress core disables the loading of custom XML entities to prevent XML eXternal Entity (XXE) and entity expansion attacks, but disabling XML-RPC entirely removes the endpoint from the attack surface. Block `xmlrpc.php` at the web server level (preferred) or disable it via a must-use plugin (`add_filter( 'xmlrpc_enabled', '__return_false' )`). Do not rely on `wp-config.php` constants — `XMLRPC_REQUEST` is a read-only internal constant that WordPress sets during XML-RPC processing and cannot be used to disable the feature.
 
--   Disable trackbacks and pingbacks.
+-   **Disable trackbacks and pingbacks** in **Settings → Discussion**. Trackbacks operate independently of `xmlrpc.php` and must be disabled separately.
 
 -   Disable the built-in file editor.
 
