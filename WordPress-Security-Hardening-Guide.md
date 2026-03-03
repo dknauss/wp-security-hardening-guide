@@ -41,7 +41,7 @@ These findings underscore the need for enterprise WordPress teams to adopt robus
 
 WordPress core has been actively maintained with security as a first-order concern since the project's founding in 2003. A dedicated Security Team of approximately 50 lead developers and security researchers — some employed by Automattic, others volunteering — is responsible for vulnerability triage, patch development, and coordinated disclosure for the core software. The team maintains working relationships with external researchers, hosting companies, and organizations such as HackerOne (see [WordPress.org Security page](https://wordpress.org/about/security/)).
 
-Vulnerabilities in WordPress core can be reported through the [WordPress HackerOne program](https://hackerone.com/wordpress). The Security Team follows a responsible disclosure process with severity-based triage and coordinated patch timelines. For a detailed account of the team's structure, history, and processes, see the [WordPress Security White Paper](https://developer.wordpress.org/apis/security/).
+Vulnerabilities in WordPress core can be reported through the [WordPress HackerOne program](https://hackerone.com/wordpress). The Security Team follows a responsible disclosure process with severity-based triage and coordinated patch timelines. For a detailed account of the team's structure, history, and processes, see the [WordPress Security White Paper](https://wordpress.org/about/security/).
 
 ### 3.2 The Release Cycle
 
@@ -201,7 +201,7 @@ Restrict file permissions and ownership using a documented least-privilege model
 
 Set the following security-related constants in `wp-config.php`:
 
--   `DISALLOW_FILE_EDIT` — Disables the built-in theme and plugin editor in the admin panel.
+-   `DISALLOW_FILE_EDIT` — Disables the built-in theme and plugin editor in the Dashboard.
 
 -   `DISALLOW_FILE_MODS` — Optional hardened profile: prevents plugin/theme uploads and updates through the Dashboard; requires an external update process.
 
@@ -278,7 +278,7 @@ The WordPress REST API (`/wp-json/`) provides a structured interface for applica
 User authentication and session management represent the most critical—and most frequently exploited—aspects of WordPress security. The majority of enterprise WordPress breaches involve compromised user credentials or hijacked sessions.
 
 > **Current Threat Context**
-> NordVPN's Stolen Cookie Study (2024) analyzed 54 billion cookies on dark web markets; the 2025 follow-up found the number had grown to 94 billion — a 74% increase. Over 17% were active sessions. Session hijacking, credential stuffing, and infostealer malware represent the fastest-growing attack categories across all web platforms.
+> The Verizon DBIR (2025) found that credential abuse remains the most common initial access vector (22% of breaches), and the SpyCloud Annual Identity Exposure Report (2025) confirms the scale of the underlying problem: over 750 million credentials were exposed in the past year, with infostealer malware responsible for a growing share. Session hijacking, credential stuffing, and infostealer malware represent the fastest-growing attack categories across all web platforms.
 
 
 ### 8.1 Multi-Factor Authentication
@@ -330,7 +330,7 @@ This secondary layer of authentication mitigates the risk of session hijacking, 
 
 -   Limit the number of administrator accounts. Reserve the primary admin for emergency "break glass" scenarios.
 -   Create custom roles with only the capabilities each user group requires.
--   Define user roles and capabilities in code (`wp-config.php` or a must-use plugin) rather than the database, making them resistant to SQLi attacks and privilege escalation.
+-   Define user roles and capabilities in a must-use plugin rather than the database, making them resistant to SQLi attacks and privilege escalation. (The WordPress roles API is not available during `wp-config.php` loading — roles must be registered on the `init` hook or later.)
 -   Restrict administrator capabilities such as file upload, plugin/theme installation, and code editing by default.
 -   Implement IP or device-based allowlists for privileged accounts where feasible.
 -   Adopt trusted device verification for accounts with elevated privileges.
@@ -461,7 +461,7 @@ Technical controls alone are insufficient. The human element accounts for the ma
 
 ### 12.3 Incident Response
 
-Every enterprise WordPress deployment should have a documented incident response plan. A structured approach reduces recovery time and limits damage. Follow an established framework such as NIST SP 800-61:
+Every enterprise WordPress deployment should have a documented incident response plan. A structured approach reduces recovery time and limits damage. Follow an established framework such as [NIST SP 800-61r3](https://csrc.nist.gov/pubs/sp/800/61/r3/final) (Section 3 provides the core incident handling lifecycle):
 
 1.  **Preparation:** Maintain response playbooks, define roles and communication channels, and verify that logging and monitoring are operational.
 
@@ -477,7 +477,7 @@ Every enterprise WordPress deployment should have a documented incident response
 
 ### 12.4 Building a Security-First Culture
 
-The Gartner Security and Risk Management Summit (2024) concluded that third-party breaches are inevitable, and IBM's Cost of a Data Breach Report (2025) confirms this: 65% of breached organizations reported they had not fully recovered. Organizations should focus on resilience in addition to prevention, and on fostering behavioral change over mere awareness:
+Industry analysts (Gartner Security and Risk Management Summit, 2024) emphasize that third-party breaches are inevitable and that organizations should prioritize resilience over prevention alone. IBM's Cost of a Data Breach Report (2025) provides the supporting data: 65% of breached organizations reported they had not fully recovered. Organizations should focus on fostering behavioral change over mere awareness:
 
 -   Train teams with simulated breach scenarios and tabletop exercises.
 
@@ -529,7 +529,7 @@ AI tools are increasingly weaponized by threat actors. The Verizon DBIR (2025) f
 
 ### 14.2 Shadow AI and Governance
 
-Shadow AI — the unsanctioned use of AI tools by employees — is an emerging organizational risk. IBM found that 20% of breached organizations experienced a shadow AI-related incident, adding $200,000 to average breach costs ($670,000 for organizations with high shadow AI prevalence). The Verizon DBIR found that 15% of employees routinely access GenAI systems on corporate devices (at least once every 15 days), with 72% using non-corporate email accounts and only 17% using corporate email with integrated authentication.
+Shadow AI — the unsanctioned use of AI tools by employees — is an emerging organizational risk. IBM found that 20% of breached organizations experienced a shadow AI-related incident (distinct from the 16% of breaches involving attacker AI use in Section 14.1), adding $200,000 to average breach costs ($670,000 for organizations with high shadow AI prevalence). The Verizon DBIR found that 15% of employees routinely access GenAI systems on corporate devices (at least once every 15 days), with 72% using non-corporate email accounts and only 17% using corporate email with integrated authentication.
 
 For WordPress teams, shadow AI risks include content contributors pasting sensitive draft content into public AI tools and developers using AI code assistants that may introduce vulnerabilities or leak proprietary code. Organizations should establish an AI acceptable use policy, maintain an inventory of approved AI tools, and enforce authentication controls on any AI service used in the content workflow.
 
@@ -547,7 +547,7 @@ For WordPress teams, shadow AI risks include content contributors pasting sensit
 ### 15.1 WordPress Security Documentation
 
 -   [Hardening WordPress — Advanced Administration Handbook](https://developer.wordpress.org/advanced-administration/security/hardening/)
--   [WordPress Security White Paper (developer.wordpress.org)](https://developer.wordpress.org/apis/security/)
+-   [WordPress Security White Paper](https://wordpress.org/about/security/) ([source](https://github.com/WordPress/Security-White-Paper))
 -   [Brute Force Attacks (developer.wordpress.org)](https://developer.wordpress.org/advanced-administration/security/brute-force/)
 -   [WordPress VIP Security Best Practices](https://docs.wpvip.com/security/)
 
@@ -564,8 +564,8 @@ For WordPress teams, shadow AI risks include content contributors pasting sensit
 
 ### 15.3 Standards and Frameworks
 
--   [NIST SP 800-63B: Digital Identity Guidelines — Authentication](https://pages.nist.gov/800-63-3/sp800-63b.html)
--   [NIST SP 800-61: Computer Security Incident Handling Guide](https://csrc.nist.gov/pubs/sp/800/61/r2/final)
+-   [NIST SP 800-63B: Digital Identity Guidelines — Authentication (Revision 4)](https://pages.nist.gov/800-63-4/sp800-63b.html)
+-   [NIST SP 800-61r3: Incident Response Recommendations and Considerations](https://csrc.nist.gov/pubs/sp/800/61/r3/final)
 -   [CIS Benchmarks](https://www.cisecurity.org/cis-benchmarks)
 -   [ISO/IEC 27000: Information Security Management](https://www.iso.org/standard/73906.html)
 
@@ -604,7 +604,7 @@ Use this matrix to keep this guide aligned with the Benchmark and Operations Run
 -   **[WordPress Security Benchmark](https://github.com/dknauss/wp-security-benchmark)** — Prescriptive, auditable hardening controls for the full WordPress stack (web server, PHP, database, application, file system). Use for compliance verification and configuration audits.
 -   **[WordPress Security Style Guide](https://github.com/dknauss/wp-security-style-guide)** — Principles, terminology, and formatting conventions for writing about WordPress security. Use when producing vulnerability disclosures, customer communications, or documentation.
 -   **[WordPress Operations Runbook](https://github.com/dknauss/wordpress-runbook-template)** — Operational procedures template for WordPress sysadmins and SREs, covering deployment, maintenance, backup, incident response, and disaster recovery.
--   **WordPress Security White Paper (WordPress.org, September 2025)** — The official upstream document describing WordPress core security architecture, maintained at [developer.wordpress.org](https://developer.wordpress.org/apis/security/).
+-   **WordPress Security White Paper (WordPress.org, September 2025)** — The official upstream document describing WordPress core security architecture, maintained at [wordpress.org/about/security/](https://wordpress.org/about/security/) ([source repository](https://github.com/WordPress/Security-White-Paper)).
 
 ## License and Attribution
 
