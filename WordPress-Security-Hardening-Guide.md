@@ -61,7 +61,7 @@ The following describes how WordPress core addresses the OWASP Top 10 Web Applic
 
 ### A01:2025 — Broken Access Control
 
-WordPress provides a granular roles and capabilities system. The core API enforces permission checks before executing any privileged action. Functions like `current_user_can()` verify authorization at the function level. Administrators can further customize roles and capabilities. The HTTP API includes built-in SSRF protections (`wp_http_validate_url()`) that block outbound requests to loopback addresses, private IP ranges, and non-standard ports. For defense in depth, supplement these with network-level egress filtering and WAF rules. SSRF — previously a standalone category (A10) in the OWASP Top 10:2021 — is classified under Broken Access Control in the 2025 edition.
+WordPress provides a granular roles and capabilities system. The core API enforces permission checks before executing any privileged action. Functions like `current_user_can()` verify authorization at the function level. Administrators can further customize roles and capabilities. WordPress uses cryptographic tokens called nonces to validate the intent of action requests and protect against Cross-Site Request Forgery (CSRF). Nonces are scoped to a specific user, action, and time window; they are generated with `wp_create_nonce()` and verified with `wp_verify_nonce()` or `check_ajax_referer()`. All nonces are invalidated on logout. Plugins and themes that handle form submissions or AJAX requests must implement nonce verification — missing or broken nonce checks are among the most common plugin vulnerability patterns. The HTTP API includes built-in SSRF protections (`wp_http_validate_url()`) that block outbound requests to loopback addresses, private IP ranges, and non-standard ports. For defense in depth, supplement these with network-level egress filtering and WAF rules. SSRF — previously a standalone category (A10) in the OWASP Top 10:2021 — is classified under Broken Access Control in the 2025 edition.
 
 ### A02:2025 — Security Misconfiguration
 
@@ -206,7 +206,7 @@ Set the following security-related constants in `wp-config.php`:
 
 ### 7.2 Disable Unused Features
 
--   Disable XML-RPC if not required (common attack vector for brute-force amplification).
+-   Disable XML-RPC if not required (common attack vector for brute-force amplification). WordPress core disables the loading of custom XML entities to prevent XML eXternal Entity (XXE) and entity expansion attacks, but disabling XML-RPC entirely removes the endpoint from the attack surface.
 
 -   Disable trackbacks and pingbacks.
 
@@ -247,6 +247,22 @@ WordPress Multisite enables a single WordPress installation to serve a network o
 -   **Domain Mapping and TLS:** When using domain mapping for subsites, ensure each mapped domain has valid TLS certificates and appropriate security headers.
 
 -   **Configuration Gating:** In Multisite environments, apply reauthentication requirements (Section 8.2) at the network level for Super Admin actions such as adding sites, managing network-wide plugins, and modifying network settings.
+
+### 7.5 REST API Security
+
+The WordPress REST API (`/wp-json/`) provides a structured interface for applications to interact with WordPress over HTTP. It powers the block editor, mobile apps, headless front-ends, and third-party integrations. Because of its broad surface area, securing the REST API is essential for any enterprise deployment.
+
+-   **Authentication Methods:** The REST API supports cookie-based authentication (with nonce validation for CSRF protection), application passwords (scoped, revocable credentials that do not grant Dashboard login access), and extensible authentication via plugins (OAuth 2.0, JWT, etc.). Choose the method appropriate to each integration and enforce the principle of least privilege.
+
+-   **Permission Callbacks:** Every REST API endpoint includes a `permission_callback` that determines whether the current user is authorized to perform the requested action. Custom endpoints must always implement permission checks — endpoints without them are publicly accessible by default.
+
+-   **Restrict Public Exposure:** By default, some REST API endpoints expose information about users, posts, and site structure to unauthenticated requests. Restrict or disable endpoints that are not required for public consumption (see Section 7.2). For headless or decoupled architectures, allowlist only the specific routes needed by the front-end application.
+
+-   **Data Validation and Sanitization:** REST API endpoints validate input against JSON Schema definitions, isolating invalid data before it reaches callback functions. Custom endpoints should define schemas for all arguments and use the built-in validation and sanitization infrastructure rather than manual parsing.
+
+-   **CORS (Cross-Origin Resource Sharing):** The REST API serves appropriate CORS headers to prevent unauthorized cross-domain requests. For sites that serve API responses to specific external origins (e.g., a decoupled front-end on a different domain), configure CORS headers explicitly rather than using a wildcard (`*`).
+
+-   **Rate Limiting:** Apply rate limiting to REST API routes at the web server level (see Section 6.1) to prevent abuse, enumeration, and resource exhaustion attacks.
 
 ## 8. User Authentication and Session Security
 
