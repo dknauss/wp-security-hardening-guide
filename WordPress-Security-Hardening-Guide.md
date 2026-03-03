@@ -49,7 +49,7 @@ WordPress follows a major/minor versioning scheme. Major releases (e.g., 6.5, 6.
 
 ### 3.3 Automatic Background Updates
 
-Automatic background updates for minor security releases have been enabled by default since WordPress 3.7, covering all supported versions back to 4.1. Enterprise environments should verify this capability remains active and supplement it with managed hosting update pipelines that include staging validation and rollback capability. Disabling automatic updates is possible but strongly discouraged — it shifts the burden of timely patching entirely to the site operator.
+Automatic background updates for minor security releases have been enabled by default since WordPress 3.7, covering all supported versions back to 3.7. Enterprise environments should verify this capability remains active and supplement it with managed hosting update pipelines that include staging validation and rollback capability. Disabling automatic updates is possible but strongly discouraged — it shifts the burden of timely patching entirely to the site operator.
 
 ### 3.4 Backward Compatibility
 
@@ -73,7 +73,7 @@ The core team monitors and updates bundled libraries (jQuery, TinyMCE, PHPMailer
 
 ### A04:2025 — Cryptographic Failures
 
-As of WordPress 6.8, passwords are hashed with bcrypt (SHA-384 pre-hashed to work around bcrypt's 72-byte input limit), and security tokens — including application passwords and password reset keys — use BLAKE2b via libsodium. Sites with the necessary server support (PHP 7.2+ with the sodium or argon2 extension) can enable Argon2id hashing via the `wp_hash_password_algorithm` filter for even stronger resistance to brute-force and GPU-accelerated attacks. WordPress supports HTTPS enforcement through configuration constants and provides salting via security keys defined in `wp-config.php`. Sensitive data like user email addresses and private content is access-controlled through the permissions system.
+As of WordPress 6.8, passwords are hashed with bcrypt (SHA-384 pre-hashed to work around bcrypt's 72-byte input limit), and security tokens — including application passwords and password reset keys — use BLAKE2b via libsodium. Sites with the necessary server support (PHP 7.3+ with the sodium or argon2 extension) can enable Argon2id hashing via the `wp_hash_password_algorithm` filter for even stronger resistance to brute-force and GPU-accelerated attacks. WordPress supports HTTPS enforcement through configuration constants and provides salting via security keys defined in `wp-config.php`. Sensitive data like user email addresses and private content is access-controlled through the permissions system.
 
 ### A05:2025 — Injection
 
@@ -102,7 +102,7 @@ WordPress core includes structured error handling through the `WP_Error` class a
 ## 5. Keeping WordPress Up to Date
 
 > **Key Principle**
-> Only the latest major version of WordPress receives new features and full development support. However, the security team backports critical security patches to all versions with automatic background update capability (currently back to WordPress 4.1). Keeping WordPress core, all plugins, and all themes up to date remains the single most important security measure for any WordPress deployment.
+> Only the latest major version of WordPress receives new features and full development support. However, the security team backports critical security patches to all versions with automatic background update capability (currently back to WordPress 3.7). Keeping WordPress core, all plugins, and all themes up to date remains the single most important security measure for any WordPress deployment.
 
 Unpatched software is the most common technical root cause of WordPress compromises. Vulnerability databases consistently show that outdated plugins with known, publicly disclosed vulnerabilities are the primary attack vector.
 
@@ -160,7 +160,7 @@ The web server (Nginx or Apache) serves as the first line of defense. Organizati
 
 -   Harden the PHP runtime: set `expose_php = Off` to prevent version disclosure in HTTP headers, set `display_errors = Off` and `log_errors = On` in production to prevent leaking file paths and database details, disable dangerous functions via `disable_functions` (e.g., `exec`, `passthru`, `shell_exec`, `system`, `proc_open`, `popen`), and restrict PHP file operations with `open_basedir` to the WordPress installation directory and required system paths. For high-security environments, consider the Snuffleupagus PHP security extension to mitigate `eval()` and provide additional hardening beyond `disable_functions`.
 
--   Configure PHP session security: set `session.cookie_secure = 1`, `session.cookie_httponly = 1`, `session.cookie_samesite = Lax`, `session.use_strict_mode = 1`, and `session.use_only_cookies = 1`.
+-   Configure PHP session security: set `session.cookie_secure = 1`, `session.cookie_httponly = 1`, `session.cookie_samesite = Lax`, `session.use_strict_mode = 1`, and `session.use_only_cookies = 1`. Note: WordPress core does not use PHP native sessions — these settings are defense-in-depth for plugins that call `session_start()`.
 
 -   Keep all server-side components (web server, database server, operating system) on supported, actively maintained versions.
 
@@ -225,7 +225,7 @@ Set the following security-related constants in `wp-config.php`:
 
 -   Scope unauthenticated REST API access to only the public endpoints your site requires (e.g., posts listing for a public front-end). Avoid blanket API blocking unless architecture explicitly requires it.
 
--   For higher reliability, consider replacing built-in `wp-cron.php` triggers with a system cron job (for example, `*/5 * * * * cd /path/to/wordpress && wp cron event run --due-now`). Treat this primarily as an operations/reliability control, with secondary security benefits.
+-   For higher reliability, consider replacing built-in `wp-cron.php` triggers with a system cron job: set `define( 'DISABLE_WP_CRON', true );` in `wp-config.php` and add a system cron entry (for example, `*/5 * * * * cd /path/to/wordpress && wp cron event run --due-now`). Without the constant, the system cron runs in addition to page-load triggers rather than replacing them. Treat this primarily as an operations/reliability control, with secondary security benefits.
 
 ### 7.3 Database Security
 
@@ -603,6 +603,7 @@ Use this matrix to keep this guide aligned with the Benchmark and Operations Run
 
 -   **[WordPress Security Benchmark](https://github.com/dknauss/wp-security-benchmark)** — Prescriptive, auditable hardening controls for the full WordPress stack (web server, PHP, database, application, file system). Use for compliance verification and configuration audits.
 -   **[WordPress Security Style Guide](https://github.com/dknauss/wp-security-style-guide)** — Principles, terminology, and formatting conventions for writing about WordPress security. Use when producing vulnerability disclosures, customer communications, or documentation.
+-   **[WordPress Operations Runbook](https://github.com/dknauss/wordpress-runbook-template)** — Operational procedures template for WordPress sysadmins and SREs, covering deployment, maintenance, backup, incident response, and disaster recovery.
 -   **WordPress Security White Paper (WordPress.org, September 2025)** — The official upstream document describing WordPress core security architecture, maintained at [developer.wordpress.org](https://developer.wordpress.org/apis/security/).
 
 ## License and Attribution
