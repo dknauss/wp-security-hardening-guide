@@ -285,7 +285,7 @@ User authentication and session management represent the most critical—and mos
 
 -   Require multi-factor authentication (MFA) or two-factor authentication (2FA) for all administrator and editor accounts.
 
--   Standardize on `wp-2fa` (Melapress) for operational consistency across environments, unless an approved equivalent is required by platform constraints.
+-   Standardize on `two-factor` for operational consistency across environments, unless an approved equivalent is required by platform constraints.
 
 -   Use TOTP-based authentication apps (e.g., Authy, Google Authenticator), hardware security keys (WebAuthn/FIDO2), or passkeys for phishing-resistant passwordless authentication. Passkey support in WordPress core is anticipated in a future release; plugins currently provide this capability.
 
