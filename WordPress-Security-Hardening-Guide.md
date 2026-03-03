@@ -31,7 +31,7 @@ IBM's Cost of a Data Breach Report (2025) found the global average breach cost w
 
 Both reports highlight AI as a rapidly growing factor in the threat landscape. The Verizon DBIR found that AI-assisted phishing emails have doubled over the past two years, while IBM reports that 16% of breaches now involve attackers using AI tools (37% for AI-generated phishing, 35% for deepfake-based social engineering). Shadow AI — the unsanctioned use of AI tools by employees — is an emerging cost amplifier: IBM found it added $200,000 to average breach costs, rising to $670,000 for organizations with high shadow AI prevalence, and that 63% of organizations lack AI governance policies. See Section 14 for WordPress-specific GenAI security guidance.
 
-All three reports — Patchstack's State of WordPress Security, the Verizon DBIR, and IBM's Cost of a Data Breach — are published annually and should be re-evaluated each year for the latest figures.
+These reports are published annually and should be re-evaluated each year for the latest figures. The primary sources cited in this guide are Patchstack's State of WordPress Security (WordPress-specific vulnerability and exploitation data), the Verizon DBIR (cross-industry breach patterns), and IBM's Cost of a Data Breach Report (financial impact). Additional annual sources worth tracking include the IBM X-Force Threat Intelligence Index (attacker techniques and operational trends), Wordfence's annual threat report (WordPress WAF and scanner telemetry), the Sucuri Website Threat Research Report (WordPress malware and cleanup data), and the CISA Known Exploited Vulnerabilities catalog (continuously updated, increasingly includes WordPress plugin vulnerabilities).
 
 These findings underscore the need for enterprise WordPress teams to adopt robust user management practices, enforce strong authentication, govern the use of AI tools, and cultivate a security-first organizational culture.
 
@@ -532,9 +532,12 @@ For WordPress teams, shadow AI risks include content contributors pasting sensit
 
 -   [OWASP Top 10:2025 Web Application Security Risks](https://owasp.org/Top10/2025/)
 -   [Patchstack State of WordPress Security (annual whitepaper)](https://patchstack.com/whitepaper/)
+-   [Wordfence Annual WordPress Security Report](https://www.wordfence.com/blog/category/wordfence-threat-intelligence/)
+-   [Sucuri Website Threat Research Report](https://sucuri.net/reports/)
 -   [Verizon Data Breach Investigations Report](https://www.verizon.com/business/resources/reports/dbir/)
 -   [IBM X-Force Threat Intelligence Index](https://www.ibm.com/reports/threat-intelligence)
 -   [IBM Cost of a Data Breach Report](https://www.ibm.com/reports/data-breach)
+-   [CISA Known Exploited Vulnerabilities Catalog](https://www.cisa.gov/known-exploited-vulnerabilities-catalog)
 
 ### 15.3 Standards and Frameworks
 
