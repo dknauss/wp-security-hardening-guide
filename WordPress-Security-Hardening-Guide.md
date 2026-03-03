@@ -128,6 +128,8 @@ The configuration of the underlying server and hosting environment is as importa
 
 The web server (Nginx or Apache) serves as the first line of defense. Organizations should follow prescriptive hardening benchmarks such as the CIS Benchmarks for web servers and WordPress.
 
+Each recommendation in this section corresponds to an auditable control in the [WordPress Security Benchmark](https://github.com/dknauss/wp-security-benchmark) §1.1 through §1.5, which provide step-by-step audit commands, remediation snippets, and default-value documentation.
+
 -   **Enforce TLS 1.2+:** Disable legacy support for TLS 1.0 and 1.1. Only TLS 1.2 and 1.3 should be accepted to mitigate protocol-level attacks like BEAST and POODLE.
 
 -   **Hide Server Tokens:** Configure the web server to suppress version numbers and operating system information in HTTP headers and error pages (`server_tokens off` in Nginx; `ServerTokens Prod` and `ServerSignature Off` in Apache).
@@ -228,6 +230,8 @@ Set the following security-related constants in `wp-config.php`:
 -   For higher reliability, consider replacing built-in `wp-cron.php` triggers with a system cron job: set `define( 'DISABLE_WP_CRON', true );` in `wp-config.php` and add a system cron entry (for example, `*/5 * * * * cd /path/to/wordpress && wp cron event run --due-now`). Without the constant, the system cron runs in addition to page-load triggers rather than replacing them. Treat this primarily as an operations/reliability control, with secondary security benefits.
 
 ### 7.3 Database Security
+
+For prescriptive audit and remediation procedures corresponding to each database recommendation below, see [WordPress Security Benchmark](https://github.com/dknauss/wp-security-benchmark) §3.1 through §3.4.
 
 -   Database table prefixes are a low-value obscurity control. Use a non-default prefix only as optional defense-in-depth; prioritize patching, least privilege, and secure coding controls.
 
@@ -474,6 +478,8 @@ Every enterprise WordPress deployment should have a documented incident response
 5.  **Recovery:** Restore from a verified clean backup if necessary. Redeploy from version-controlled source code. Force password resets for all affected accounts. Re-enable the site and monitor closely for recurrence.
 
 6.  **Lessons Learned:** Conduct a post-incident review within 72 hours. Document root cause, timeline, impact, and remediation steps. Update security policies, monitoring rules, and response playbooks based on findings.
+
+> For hands-on-keyboard procedures implementing each phase of this lifecycle — containment commands, forensic artifact capture, malware scanning, credential reset, and recovery validation — see [WordPress Operations Runbook](https://github.com/dknauss/wordpress-runbook-template) §10.3 and §10.4.
 
 ### 12.4 Building a Security-First Culture
 
