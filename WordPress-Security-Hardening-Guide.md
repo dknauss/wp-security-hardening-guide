@@ -1,16 +1,16 @@
 ---
 title: "WordPress Security Architecture and Hardening Guide"
 subtitle: "Enterprise Best Practices and Threat Mitigation"
-author: "General Editor: Dan Knauss"
-date: "March 3, 2026"
+author: "General Editor: Dan Knauss."
+date: "March 3, 2026."
 version: "1.0"
 ---
+
+WordPress is a free and open-source content management system (CMS) licensed under the GNU General Public License (GPLv2 or later). It is the most widely used digital publishing platform in the world, from entry-level to enterprise market segments. WordPress powers more than 43% of the top 10 million websites on the internet and holds a 63% CMS market share (W3Techs, September 2025) overall. Its extensibility, combined with a vast and mature development ecosystem, makes it a popular choice for organizations of all sizes.
 
 ## 1. Overview
 
 This document provides a comprehensive analysis of the WordPress core software, its security architecture, development processes, and recommended hardening practices. It is intended for developers, system administrators, and technical teams responsible for deploying and maintaining WordPress in enterprise environments.
-
-WordPress is a free and open-source content management system (CMS) licensed under the GNU General Public License (GPLv2 or later). It is the most widely used CMS in the world, powering more than 43% of the top 10 million websites on the internet and holding a 63% CMS market share (W3Techs, September 2025). Its extensibility through plugins and themes, combined with a mature development community, makes it a popular choice for organizations of all sizes.
 
 The security information in this document reflects the state of WordPress as of version 6.9 (2026). However, the principles and architectural details described here are broadly applicable to all recent versions due to the project's strong commitment to backward compatibility.
 
@@ -19,9 +19,7 @@ The security information in this document reflects the state of WordPress as of 
 > Questions about this guideline may be directed to your organization's information security team.
 
 
-## 2. Executive Summary
-
-Since its inception in 2003, WordPress has undergone continuous security hardening. Its core software addresses common security threats, including those identified in the OWASP Top 10. The WordPress Security Team, in collaboration with the Core Leadership Team and the global community, identifies and resolves security issues in the core software distributed at WordPress.org.
+## 2. Threat Landscape
 
 The current threat landscape emphasizes that the most significant risks to WordPress deployments come not from the core software itself but from unpatched third-party components (plugins and themes), misconfigured environments, and compromised user accounts. According to annual data from vulnerability databases maintained by Patchstack, WPScan, and Wordfence, 90–99% of all WordPress-related vulnerabilities originate in plugins, not WordPress core or themes.
 
@@ -40,6 +38,8 @@ These findings underscore the need for enterprise WordPress teams to adopt robus
 ## 3. WordPress Core Security Architecture
 
 ### 3.1 The WordPress Security Team
+
+WordPress has undergone continuous security hardening since 2003. Its core software addresses common security threats, including those identified in the OWASP Top 10. The WordPress Security Team, in collaboration with the Core Leadership Team and the global community, identifies and resolves security issues in the core software distributed at WordPress.org.
 
 The WordPress Security Team comprises approximately 50 experts, including lead developers and security researchers, some of whom are Automattic employees (see [WordPress.org Security page](https://wordpress.org/about/security/)). The team collaborates with well-known security researchers, hosting companies, and other stakeholders in the web security field.
 
