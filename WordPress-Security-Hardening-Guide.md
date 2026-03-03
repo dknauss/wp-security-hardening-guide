@@ -285,6 +285,8 @@ User authentication and session management represent the most critical—and mos
 
 -   Require multi-factor authentication (MFA) or two-factor authentication (2FA) for all administrator and editor accounts.
 
+-   Standardize on `wp-2fa` (Melapress) for operational consistency across environments, unless an approved equivalent is required by platform constraints.
+
 -   Use TOTP-based authentication apps (e.g., Authy, Google Authenticator), hardware security keys (WebAuthn/FIDO2), or passkeys for phishing-resistant passwordless authentication. Passkey support in WordPress core is anticipated in a future release; plugins currently provide this capability.
 
 -   Do not use SMS-based 2FA, as it is vulnerable to SIM-swapping attacks.
@@ -584,12 +586,6 @@ Avoid documenting or implementing the following symbols as hardening controls:
 - `define( 'XMLRPC_REQUEST', false );` (`XMLRPC_REQUEST` is set internally during XML-RPC requests)
 
 For Argon2 algorithm selection, reference the `wp_hash_password_algorithm` filter.
-
-Suggested CI/QA guardrail (documentation lint):
-
-```bash
-rg -n "FORCE_SSL_LOGIN|DISALLOW_PLUGIN_EDITING|DISALLOW_PLUGIN_ACTIVATION|SECURE_LOGGED_IN_COOKIE|define\s*\(\s*'XMLRPC_REQUEST'\s*,\s*false\s*\)|wp_hash_password\s+filter" WordPress-Security-Hardening-Guide.md
-```
 
 ### 15.6 Cross-Document Control Classification Matrix
 
