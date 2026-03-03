@@ -23,7 +23,9 @@ The security information in this document reflects the state of WordPress as of 
 
 Since its inception in 2003, WordPress has undergone continuous security hardening. Its core software addresses common security threats, including those identified in the OWASP Top 10. The WordPress Security Team, in collaboration with the Core Leadership Team and the global community, identifies and resolves security issues in the core software distributed at WordPress.org.
 
-The current threat landscape emphasizes that the most significant risks to WordPress deployments come not from the core software itself but from unpatched third-party extensions, misconfigured environments, and compromised user accounts. According to annual data from vulnerability databases maintained by Patchstack, WPScan, and Wordfence, 90–99% of all WordPress-related vulnerabilities originate in plugins, not WordPress core or themes.
+The current threat landscape emphasizes that the most significant risks to WordPress deployments come not from the core software itself but from unpatched third-party components (plugins and themes), misconfigured environments, and compromised user accounts. According to annual data from vulnerability databases maintained by Patchstack, WPScan, and Wordfence, 90–99% of all WordPress-related vulnerabilities originate in plugins, not WordPress core or themes.
+
+Patchstack's State of WordPress Security report (2026 edition, covering 2025 data) recorded 11,334 WordPress vulnerabilities — a 42% year-over-year increase following 7,966 in 2024 and 5,948 in 2023. Plugins accounted for 10,359 of these, themes 971, and WordPress core just 2. Nearly half (46%) of vulnerabilities had no developer fix at the time of public disclosure, and the weighted median time to first exploit for high-impact vulnerabilities was 5 hours. The 2026 report is also the first to provide exploitation-by-type data (from Patchstack's RapidMitigate blocked-attack telemetry), revealing a dramatic gap between what gets *filed* and what gets *attacked*: Broken Access Control accounts for roughly 14% of discovered vulnerabilities but 57% of exploitation attempts, while Cross-Site Scripting accounts for nearly half of discoveries but only 1% of attacks. This distinction matters for prioritization — vulnerability counts alone do not reflect real-world risk.
 
 The Verizon Data Breach Investigations Report (2025) analyzed over 22,000 security incidents and 12,195 confirmed breaches. It identifies the human element — including errors, social engineering, and misuse — as a contributing factor in approximately 60% of breaches. Credential abuse remains the most common initial access vector (22%), followed by exploitation of vulnerabilities (20%, a 34% year-over-year increase driven largely by edge device and VPN appliance compromises). Third-party involvement in breaches has doubled to 30%, reinforcing the supply chain risks described in Section 11. Ransomware was present in 44% of breaches (up from 32%), though the median ransom payment declined to $115,000 as 64% of victim organizations refused to pay.
 
@@ -31,7 +33,7 @@ IBM's Cost of a Data Breach Report (2025) found the global average breach cost w
 
 Both reports highlight AI as a rapidly growing factor in the threat landscape. The Verizon DBIR found that AI-assisted phishing emails have doubled over the past two years, while IBM reports that 16% of breaches now involve attackers using AI tools (37% for AI-generated phishing, 35% for deepfake-based social engineering). Shadow AI — the unsanctioned use of AI tools by employees — is an emerging cost amplifier: IBM found it added $200,000 to average breach costs, rising to $670,000 for organizations with high shadow AI prevalence, and that 63% of organizations lack AI governance policies. See Section 14 for WordPress-specific GenAI security guidance.
 
-Both reports are published annually and should be consulted for the latest figures.
+All three reports — Patchstack's State of WordPress Security, the Verizon DBIR, and IBM's Cost of a Data Breach — are published annually and should be re-evaluated each year for the latest figures.
 
 These findings underscore the need for enterprise WordPress teams to adopt robust user management practices, enforce strong authentication, govern the use of AI tools, and cultivate a security-first organizational culture.
 
@@ -71,7 +73,7 @@ WordPress provides configuration constants (in `wp-config.php`) to harden instal
 
 ### A03:2025 — Software Supply Chain Failures
 
-The core team monitors and updates bundled libraries (jQuery, TinyMCE, PHPMailer, etc.). Automatic background updates ensure core patches reach sites promptly. The plugin/theme repository team reviews submissions and can remove or update vulnerable components. See also Section 11 (Supply Chain Security) for extended guidance on managing the WordPress extension ecosystem.
+The core team monitors and updates bundled libraries (jQuery, TinyMCE, PHPMailer, etc.). Automatic background updates ensure core patches reach sites promptly. The plugin/theme repository team reviews submissions and can remove or update vulnerable components. See also Section 11 (Supply Chain Security) for extended guidance on managing the WordPress plugin and theme ecosystem.
 
 ### A04:2025 — Cryptographic Failures
 
@@ -363,7 +365,7 @@ Robust backup and recovery capabilities are essential. In the event of a securit
 
 ## 11. Supply Chain Security
 
-WordPress's extensibility through plugins and themes introduces supply chain risk. Unlike sandboxed extension models found in some platforms, WordPress's plugin architecture executes all third-party code at the same privilege level as core, with full access to the database, filesystem, and WordPress APIs. There is no built-in capability isolation between plugins. This design maximizes flexibility and performance but amplifies the impact of any single compromised or vulnerable extension, making the vetting and management of extensions a critical security concern.
+WordPress's extensibility through plugins and themes introduces supply chain risk. Unlike sandboxed extension models found in some platforms, WordPress's plugin architecture executes all third-party code at the same privilege level as core, with full access to the database, filesystem, and WordPress APIs. There is no built-in capability isolation between plugins. This design maximizes flexibility and performance but amplifies the impact of any single compromised or vulnerable component, making the vetting and management of plugins and themes a critical security concern.
 
 The scale of this risk is growing. The Verizon DBIR (2025) found that third-party involvement in breaches has doubled to 30%, driven in part by exploitation of software supply chain dependencies and partner-connected access. IBM's Cost of a Data Breach Report (2025) found supply chain compromise to be the second most common initial attack vector (15% of breaches) with an average cost of $4.91 million — the highest cost amplifying factor across all breach categories. The Verizon report also found that exploitation of vulnerabilities in edge devices and VPN appliances increased from 3% to 22% of vulnerability-related breaches, with a median remediation time of 32 days and only 54% of affected devices fully patched during the reporting period. These trends are directly relevant to WordPress environments that rely on third-party plugins, themes, and hosting infrastructure.
 
@@ -491,7 +493,7 @@ WordPress can be installed on virtually any server environment, but the hosting 
 
 Leading enterprise WordPress hosts—including WordPress VIP, WP Engine, and Pantheon—hold certifications such as SOC 2, PCI DSS, and ISO 27001. WordPress VIP additionally holds FedRAMP authorization for United States federal projects. When evaluating hosting providers, verify that their specific certifications match your organization's compliance requirements.
 
-## 14. Generative AI Security in WordPress
+## 14. AI Integration Security in WordPress
 
 As organizations integrate Generative AI (GenAI) into their WordPress workflows — for content generation, chat interfaces, and automated site management — new security considerations emerge. These risks are no longer theoretical: IBM's Cost of a Data Breach Report (2025) found that 13% of organizations experienced a breach involving an AI model or application, and 97% of those breaches involved AI systems lacking proper access controls. The most common AI-specific attack types were supply chain compromise of AI components (30%), model inversion (24%), model evasion (21%), prompt injection (17%), and data poisoning (15%).
 
@@ -529,6 +531,7 @@ For WordPress teams, shadow AI risks include content contributors pasting sensit
 ### 15.2 Threat Intelligence and Industry Reports
 
 -   [OWASP Top 10:2025 Web Application Security Risks](https://owasp.org/Top10/2025/)
+-   [Patchstack State of WordPress Security (annual whitepaper)](https://patchstack.com/whitepaper/)
 -   [Verizon Data Breach Investigations Report](https://www.verizon.com/business/resources/reports/dbir/)
 -   [IBM X-Force Threat Intelligence Index](https://www.ibm.com/reports/threat-intelligence)
 -   [IBM Cost of a Data Breach Report](https://www.ibm.com/reports/data-breach)
