@@ -6,11 +6,11 @@ date: "March 3, 2026"
 version: "1.0"
 ---
 
-WordPress is the dominant content management system, powering over 43% of the top 10 million websites and holding a 63% CMS market share (W3Techs, September 2025). Licensed under the GPLv2 or later, WordPress benefits from a large, mature development ecosystem and a dedicated security team. This document provides enterprise hardening guidance for the full WordPress stack — core software, plugin and theme ecosystem, server environment, and organizational security practices.
-
 ## 1. Overview
 
-This document provides a comprehensive analysis of the WordPress core software, its security architecture, development processes, and recommended hardening practices. It is intended for developers, system administrators, and technical teams responsible for deploying and maintaining WordPress in enterprise environments.
+WordPress is the dominant content management system, powering over 43% of the top 10 million websites and holding a 63% CMS market share (W3Techs, September 2025). Licensed under the GPLv2 or later, WordPress benefits from a large, mature development ecosystem and a dedicated security team. 
+
+This document provides enterprise hardening guidance for the full WordPress stack — core software, plugin, and theme ecosystem, server environment, and organizational security practices. It provides a comprehensive analysis of the WordPress core software, its security architecture, development processes, and recommended hardening practices. It is intended for developers, system administrators, and technical teams responsible for deploying and maintaining WordPress in enterprise environments.
 
 The security information in this document reflects the state of WordPress as of version 6.9 (2026). However, the principles and architectural details described here are broadly applicable to all recent versions due to the project's strong commitment to backward compatibility.
 
