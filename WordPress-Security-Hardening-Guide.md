@@ -178,7 +178,7 @@ Each recommendation in this section corresponds to an auditable control in the [
 
 ### 6.4 File Permissions
 
-Restrict file permissions and ownership using a documented least-privilege model.
+Restrict file permissions and ownership using a documented least-privilege model. File permissions are context-dependent; the [WordPress Security Style Guide](https://github.com/dknauss/wp-security-style-guide) §3.7 explains how to communicate environment-specific recommendations. The [WordPress Security Benchmark](https://github.com/dknauss/wp-security-benchmark) §6.1 provides the auditable control.
 
 **Ownership model (choose and document per environment):**
 
@@ -299,9 +299,11 @@ User authentication and session management represent the most critical—and mos
 
 -   Encourage all users, including contributors and subscribers, to enable 2FA.
 
+> For the operational procedure to install, configure, verify, and provide emergency recovery for the `two-factor` plugin via WP-CLI, see [WordPress Operations Runbook](https://github.com/dknauss/wordpress-runbook-template) §5.5.
+
 ### 8.2 Privileged Action Gating
 
-Enterprise environments should implement action-gated reauthentication for high-risk operations. This requires users—even those already logged in with administrative privileges—to reconfirm their identity before performing sensitive tasks.
+Enterprise environments should implement action-gated reauthentication for high-risk operations. (Also known as "sudo mode." See the [WordPress Security Style Guide](https://github.com/dknauss/wp-security-style-guide) Glossary for the formal definition and usage guidance.) This requires users—even those already logged in with administrative privileges—to reconfirm their identity before performing sensitive tasks.
 
 Recommended gated actions include:
 -   Installing, activating, or deleting plugins and themes.
@@ -408,6 +410,8 @@ For WordPress, a comprehensive SBOM should include:
 -   Web server and database versions.
 
 Maintaining an SBOM allows for rapid impact assessment when a new vulnerability is disclosed in a common component or library.
+
+> The [WordPress Security Benchmark](https://github.com/dknauss/wp-security-benchmark) §8.4 provides an auditable control for SBOM maintenance, including tooling recommendations and CI/CD integration guidance.
 
 ### 11.2 Plugin and Theme Management
 
