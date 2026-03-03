@@ -6,7 +6,7 @@ date: "March 3, 2026"
 version: "1.0"
 ---
 
-WordPress is a free and open-source content management system (CMS) licensed under the GNU General Public License (GPLv2 or later). It is the most widely used digital publishing platform in the world, from entry-level to enterprise market segments. WordPress powers more than 43% of the top 10 million websites on the internet and holds a 63% CMS market share (W3Techs, September 2025) overall. Its extensibility, combined with a vast and mature development ecosystem, makes it a popular choice for organizations of all sizes.
+WordPress is the dominant content management system, powering over 43% of the top 10 million websites and holding a 63% CMS market share (W3Techs, September 2025). Licensed under the GPLv2 or later, WordPress benefits from a large, mature development ecosystem and a dedicated security team. This document provides enterprise hardening guidance for the full WordPress stack — core software, plugin and theme ecosystem, server environment, and organizational security practices.
 
 ## 1. Overview
 
@@ -39,25 +39,21 @@ These findings underscore the need for enterprise WordPress teams to adopt robus
 
 ### 3.1 The WordPress Security Team
 
-WordPress has undergone continuous security hardening since 2003. Its core software addresses common security threats, including those identified in the OWASP Top 10. The WordPress Security Team, in collaboration with the Core Leadership Team and the global community, identifies and resolves security issues in the core software distributed at WordPress.org.
+WordPress core has been actively maintained with security as a first-order concern since the project's founding in 2003. A dedicated Security Team of approximately 50 lead developers and security researchers — some employed by Automattic, others volunteering — is responsible for vulnerability triage, patch development, and coordinated disclosure for the core software. The team maintains working relationships with external researchers, hosting companies, and organizations such as HackerOne (see [WordPress.org Security page](https://wordpress.org/about/security/)).
 
-The WordPress Security Team comprises approximately 50 experts, including lead developers and security researchers, some of whom are Automattic employees (see [WordPress.org Security page](https://wordpress.org/about/security/)). The team collaborates with well-known security researchers, hosting companies, and other stakeholders in the web security field.
-
-The team practices responsible disclosure. Potential vulnerabilities can be reported through the [WordPress HackerOne program](https://hackerone.com/wordpress). Reports are acknowledged upon receipt, and the team works to verify, assess severity, and develop patches. Critical fixes may be pushed as immediate security releases.
+Vulnerabilities in WordPress core can be reported through the [WordPress HackerOne program](https://hackerone.com/wordpress). The Security Team follows a responsible disclosure process with severity-based triage and coordinated patch timelines. For a detailed account of the team's structure, history, and processes, see the [WordPress Security White Paper](https://developer.wordpress.org/apis/security/).
 
 ### 3.2 The Release Cycle
 
-Each WordPress release cycle lasts approximately four to five months and follows a structured process: planning and feature scoping, active development, beta releases with community testing, release candidates with string freezes, and final launch. Major versions (e.g., 6.5, 6.6) may add features and APIs, while minor versions (e.g., 6.5.1, 6.5.2) are reserved exclusively for security and critical bug fixes.
+WordPress follows a major/minor versioning scheme. Major releases (e.g., 6.5, 6.6) ship new features on a roughly four-month cycle through a structured process of scoping, development, beta testing, and release candidates. Minor releases (e.g., 6.5.1) contain only security and critical bug fixes. See the [WordPress Release Cycle documentation](https://make.wordpress.org/core/handbook/about/release-cycle/) for process details.
 
 ### 3.3 Automatic Background Updates
 
-Since WordPress 3.7, the platform has supported automatic background updates for minor security releases. This means security patches can be deployed without requiring site owner intervention. The core team pushes security updates for all versions capable of background updates, ensuring broad coverage.
-
-Site owners can disable this feature but are strongly encouraged to keep it enabled. For enterprise environments, managed hosting providers typically handle update deployment with additional testing and rollback capabilities.
+Automatic background updates for minor security releases have been enabled by default since WordPress 3.7, covering all supported versions back to 4.1. Enterprise environments should verify this capability remains active and supplement it with managed hosting update pipelines that include staging validation and rollback capability. Disabling automatic updates is possible but strongly discouraged — it shifts the burden of timely patching entirely to the site operator.
 
 ### 3.4 Backward Compatibility
 
-WordPress maintains a strong commitment to backward compatibility. This ensures that themes, plugins, and custom code continue to function when the core software is updated, reducing friction for site owners to stay current with security releases.
+WordPress prioritizes backward compatibility across major releases, which reduces the risk of breakage during security updates — a key factor for enterprise teams managing large plugin inventories. This commitment lowers the operational cost of staying current and is one of the reasons minor security releases can be safely auto-applied.
 
 ## 4. OWASP Top 10 Coverage
 
@@ -65,7 +61,7 @@ The following describes how WordPress core addresses the OWASP Top 10 Web Applic
 
 ### A01:2025 — Broken Access Control
 
-WordPress provides a granular roles and capabilities system. The core API enforces permission checks before executing any privileged action. Functions like `current_user_can()` verify authorization at the function level. Administrators can further customize roles and capabilities. HTTP requests issued by WordPress are filtered to prevent access to loopback and private IP addresses, mitigating server-side request forgery (SSRF). The HTTP API restricts requests to standard ports and provides hooks for additional filtering. SSRF — previously a standalone category (A10) in the OWASP Top 10:2021 — is classified under Broken Access Control in the 2025 edition.
+WordPress provides a granular roles and capabilities system. The core API enforces permission checks before executing any privileged action. Functions like `current_user_can()` verify authorization at the function level. Administrators can further customize roles and capabilities. The HTTP API includes built-in SSRF protections (`wp_http_validate_url()`) that block outbound requests to loopback addresses, private IP ranges, and non-standard ports. For defense in depth, supplement these with network-level egress filtering and WAF rules. SSRF — previously a standalone category (A10) in the OWASP Top 10:2021 — is classified under Broken Access Control in the 2025 edition.
 
 ### A02:2025 — Security Misconfiguration
 
@@ -77,7 +73,7 @@ The core team monitors and updates bundled libraries (jQuery, TinyMCE, PHPMailer
 
 ### A04:2025 — Cryptographic Failures
 
-As of WordPress 6.8, user passwords are hashed using bcrypt by default, with SHA-384 pre-hashing to address bcrypt's 72-byte input limit. Application passwords, password reset keys, and other security tokens use the BLAKE2b algorithm via Sodium. Sites with the necessary server support (PHP 7.2+ with the sodium or argon2 extension) can enable Argon2id hashing via the `wp_hash_password` core filter for even stronger resistance to brute-force and GPU-accelerated attacks. WordPress supports HTTPS enforcement through configuration constants and provides salting via security keys defined in `wp-config.php`. Sensitive data like user email addresses and private content is access-controlled through the permissions system.
+As of WordPress 6.8, passwords are hashed with bcrypt (SHA-384 pre-hashed to work around bcrypt's 72-byte input limit), and security tokens — including application passwords and password reset keys — use BLAKE2b via libsodium. Sites with the necessary server support (PHP 7.2+ with the sodium or argon2 extension) can enable Argon2id hashing via the `wp_hash_password` core filter for even stronger resistance to brute-force and GPU-accelerated attacks. WordPress supports HTTPS enforcement through configuration constants and provides salting via security keys defined in `wp-config.php`. Sensitive data like user email addresses and private content is access-controlled through the permissions system.
 
 ### A05:2025 — Injection
 
@@ -89,7 +85,7 @@ WordPress core follows security-by-default principles. Default settings are eval
 
 ### A07:2025 — Authentication Failures
 
-WordPress manages authentication server-side with salted, hashed passwords and secure session cookies. Sessions are destroyed on logout. The platform supports application passwords for REST API and XML-RPC authentication — these provide secure, scoped credentials that are revocable and not valid for Dashboard login, though they bypass 2FA and should be managed carefully (see Section 8). WordPress is compatible with two-factor authentication plugins.
+WordPress handles authentication entirely server-side — passwords are bcrypt-hashed (see A04 above) and session tokens are invalidated on logout. The platform supports application passwords for REST API and XML-RPC authentication — these provide secure, scoped credentials that are revocable and not valid for Dashboard login, though they bypass 2FA and should be managed carefully (see Section 8). WordPress is compatible with two-factor authentication plugins.
 
 ### A08:2025 — Software or Data Integrity Failures
 
