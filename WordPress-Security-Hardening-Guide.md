@@ -73,7 +73,7 @@ The core team monitors and updates bundled libraries (jQuery, TinyMCE, PHPMailer
 
 ### A04:2025 — Cryptographic Failures
 
-As of WordPress 6.8, passwords are hashed with bcrypt (SHA-384 pre-hashed to work around bcrypt's 72-byte input limit), and security tokens — including application passwords and password reset keys — use BLAKE2b via libsodium. Sites with the necessary server support (PHP 7.2+ with the sodium or argon2 extension) can enable Argon2id hashing via the `wp_hash_password` core filter for even stronger resistance to brute-force and GPU-accelerated attacks. WordPress supports HTTPS enforcement through configuration constants and provides salting via security keys defined in `wp-config.php`. Sensitive data like user email addresses and private content is access-controlled through the permissions system.
+As of WordPress 6.8, passwords are hashed with bcrypt (SHA-384 pre-hashed to work around bcrypt's 72-byte input limit), and security tokens — including application passwords and password reset keys — use BLAKE2b via libsodium. Sites with the necessary server support (PHP 7.2+ with the sodium or argon2 extension) can enable Argon2id hashing via the `wp_hash_password_algorithm` filter for even stronger resistance to brute-force and GPU-accelerated attacks. WordPress supports HTTPS enforcement through configuration constants and provides salting via security keys defined in `wp-config.php`. Sensitive data like user email addresses and private content is access-controlled through the permissions system.
 
 ### A05:2025 — Injection
 
@@ -146,7 +146,7 @@ The web server (Nginx or Apache) serves as the first line of defense. Organizati
 
 ### 6.2 Firewall and Network Configuration
 
--   Deploy a host-based firewall (e.g., UFW on Ubuntu/Debian) restricting inbound traffic to required ports only (typically 80, 443, and a non-standard SSH port).
+-   Deploy a host-based firewall (e.g., UFW on Ubuntu/Debian) restricting inbound traffic to required ports only (typically 80, 443, and SSH).
 
 -   Implement Fail2Ban to detect and block malicious patterns at the server level, including integration with WordPress login logs.
 
@@ -168,24 +168,33 @@ The web server (Nginx or Apache) serves as the first line of defense. Organizati
 
 -   Require SSH key-based authentication; disable password-based SSH access.
 
--   Use SFTP only; disable FTP entirely.
+-   Prefer SFTP or SCP over legacy FTP. If FTPS is used for compatibility, enforce TLS and strong credentials, and plan migration to SFTP.
 
 -   Enforce per-site process isolation in containerized or chroot environments.
 
--   Place `wp-config.php` above the document root where server configuration allows.
+-   Consider placing `wp-config.php` above the document root where server configuration allows. This is defense-in-depth and must be validated carefully; a misconfigured web root can reduce security.
 
 ### 6.4 File Permissions
 
-Restrict file permissions on WordPress files so they cannot be modified by the web server process where possible. Recommended permissions:
+Restrict file permissions and ownership using a documented least-privilege model.
 
--   Directories: 755 (or 750 where group permissions are not needed).
+**Ownership model (choose and document per environment):**
+
+-   **Model A (preferred on dedicated/self-managed hosts):** site-owned files with web-server group read access (for example, `wp_user:www-data`), plus controlled write access only where needed (uploads/cache).
+
+-   **Model B (provider-constrained shared/managed hosting):** provider-required ownership model with compensating controls (`DISALLOW_FILE_EDIT`, controlled update process, and stricter monitoring).
+
+**Recommended permissions:**
+
+-   Directories: 755 (or 750 where group/world read is not required).
 
 -   Files: 644 (or 640).
 
--   wp-config.php: 600 or 640, owned by the system user, not the web server user.
+-   `wp-config.php`: 400 or 440 preferred steady-state; 600/640 may be used temporarily when deployment automation must write, then revert.
 
--   Set `DISALLOW_FILE_MODS` to `true` in `wp-config.php` to prevent all file modifications through the WordPress admin interface, including plugin/theme installation and updates (handle these through deployment pipelines instead).
+-   Set `DISALLOW_FILE_EDIT` to `true` in `wp-config.php` as the baseline to disable the built-in editor. Use `DISALLOW_FILE_MODS` only in hardened profiles with a documented external update pipeline.
 
+---
 ## 7. WordPress Application Hardening
 
 ### 7.1 Configuration Constants
@@ -194,7 +203,7 @@ Set the following security-related constants in `wp-config.php`:
 
 -   `DISALLOW_FILE_EDIT` — Disables the built-in theme and plugin editor in the admin panel.
 
--   `DISALLOW_FILE_MODS` — Prevents all file modifications including plugin/theme uploads and updates.
+-   `DISALLOW_FILE_MODS` — Optional hardened profile: prevents plugin/theme uploads and updates through the Dashboard; requires an external update process.
 
 -   `FORCE_SSL_ADMIN` — Forces HTTPS on all admin and login pages.
 
@@ -214,13 +223,13 @@ Set the following security-related constants in `wp-config.php`:
 
 -   Prevent username enumeration via the REST API and author archives.
 
--   Restrict unauthenticated REST API access to prevent information leakage about site structure, content, and users. Allow specific public endpoints only where required (e.g., for decoupled front-ends or front-end search).
+-   Scope unauthenticated REST API access to only the public endpoints your site requires (e.g., posts listing for a public front-end). Avoid blanket API blocking unless architecture explicitly requires it.
 
--   Disable the built-in `wp-cron.php` pseudo-cron by setting `DISABLE_WP_CRON` to `true` in `wp-config.php`, and replace it with a system-level cron job (e.g., `*/5 * * * * cd /path/to/wordpress && wp cron event run --due-now`). Block direct external access to `wp-cron.php` at the web server level. The built-in pseudo-cron fires on page loads, making execution timing unpredictable and exposing an additional PHP endpoint to resource exhaustion attacks.
+-   For higher reliability, consider replacing built-in `wp-cron.php` triggers with a system cron job (for example, `*/5 * * * * cd /path/to/wordpress && wp cron event run --due-now`). Treat this primarily as an operations/reliability control, with secondary security benefits.
 
 ### 7.3 Database Security
 
--   Use a unique, non-default database table prefix.
+-   Database table prefixes are a low-value obscurity control. Use a non-default prefix only as optional defense-in-depth; prioritize patching, least privilege, and secure coding controls.
 
 -   Grant the database user only the minimum required privileges: SELECT, INSERT, UPDATE, DELETE, CREATE, ALTER, INDEX, and DROP on the WordPress database only. CREATE, ALTER, INDEX, and DROP are needed for plugin table creation, schema updates, and core updates. Some plugins may also require CREATE TEMPORARY TABLES or LOCK TABLES — add only when verified necessary.
 
@@ -302,7 +311,7 @@ This secondary layer of authentication mitigates the risk of session hijacking, 
 -   Enforce strong passwords of at least 12 characters, following NIST SP 800-63B guidelines.
 -   Block passwords found in known breach databases (e.g., Have I Been Pwned).
 -   Do not enforce arbitrary complexity rules (e.g., requiring special characters) that encourage predictable patterns; enforce length and entropy instead.
--   On servers with the necessary PHP extensions, consider enabling Argon2id password hashing via the core `wp_hash_password` filter for stronger resistance to GPU-accelerated brute-force attacks.
+-   On servers with the necessary PHP extensions, consider enabling Argon2id password hashing via the `wp_hash_password_algorithm` filter for stronger resistance to GPU-accelerated brute-force attacks.
 
 ### 8.4 Session Management
 
@@ -562,6 +571,37 @@ For WordPress teams, shadow AI risks include content contributors pasting sensit
 
 -   [KnowBe4: Security Culture](https://www.knowbe4.com/security-culture)
 -   [NIST: Users Are Not Stupid — Six Cyber Security Pitfalls Overturned](https://www.nist.gov/)
+
+
+### 15.5 Deprecated and Invalid Constants Guardrail
+
+Avoid documenting or implementing the following symbols as hardening controls:
+
+- `FORCE_SSL_LOGIN` (deprecated)
+- `DISALLOW_PLUGIN_EDITING` (not a core constant)
+- `DISALLOW_PLUGIN_ACTIVATION` (not a core constant)
+- `SECURE_LOGGED_IN_COOKIE` (not a core constant)
+- `define( 'XMLRPC_REQUEST', false );` (`XMLRPC_REQUEST` is set internally during XML-RPC requests)
+
+For Argon2 algorithm selection, reference the `wp_hash_password_algorithm` filter.
+
+Suggested CI/QA guardrail (documentation lint):
+
+```bash
+rg -n "FORCE_SSL_LOGIN|DISALLOW_PLUGIN_EDITING|DISALLOW_PLUGIN_ACTIVATION|SECURE_LOGGED_IN_COOKIE|define\s*\(\s*'XMLRPC_REQUEST'\s*,\s*false\s*\)|wp_hash_password\s+filter" WordPress-Security-Hardening-Guide.md
+```
+
+### 15.6 Cross-Document Control Classification Matrix
+
+Use this matrix to keep this guide aligned with the Benchmark and Operations Runbook.
+
+| **Control Area** | **Baseline** | **Optional Hardened** | **Environment-Specific** |
+| :--- | :--- | :--- | :--- |
+| File editor/mods | `DISALLOW_FILE_EDIT = true` | `DISALLOW_FILE_MODS = true` with external update pipeline | Dashboard updates retained where platform process requires it |
+| REST API | Public content routes allowed; sensitive routes protected by auth/permissions | Block user-enumeration routes and harden custom endpoint callbacks | Global unauthenticated blocking only for private/intranet deployments |
+| XML-RPC | Keep only when required by integrations | Disable with `xmlrpc_enabled` and/or server-level block when unused | Route/IP allowlisting for required integrations |
+| File ownership | Documented least-privilege model per environment | Per-site process isolation and immutable deploy artifacts | Provider-constrained ownership with compensating controls |
+| SSH access | Key-only auth + host firewall/fail2ban | Non-standard SSH port for scanner-noise reduction | Managed-host controls where SSH is unavailable |
 
 ## Related Documents
 
