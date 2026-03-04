@@ -58,7 +58,7 @@ To get the most out of this repository:
 
 ## Contributors
 
-- [Dan Knauss](https://dan.knauss.ca) — author, editor
+- [Dan Knauss](https://dan.knauss.ca) — (Human) — author, editor, reviewer, researcher
 - [Claude](https://claude.ai) (Anthropic) — review, revision, cross-document alignment
 - [Gemini](https://gemini.google.com) (Google) — independent review and revision planning
 - [GPT-5 Codex](https://openai.com) (OpenAI) — independent review and revision planning
