@@ -524,7 +524,7 @@ WordPress can be installed on virtually any server environment, but the hosting 
 -   Relevant certifications: SOC 2, PCI DSS, GDPR-aligned data processing agreements, and for government/education, FedRAMP or equivalent.
 -   An immutable filesystem where applicable, preventing runtime file modifications.
 
-Leading enterprise WordPress hosts—including WordPress VIP, WP Engine, and Pantheon—hold certifications such as SOC 2, PCI DSS, and ISO 27001. WordPress VIP additionally holds FedRAMP authorization for United States federal projects. When evaluating hosting providers, verify that their specific certifications match your organization's compliance requirements.
+Leading enterprise WordPress hosts hold certifications such as SOC 2, PCI DSS, and ISO 27001. WordPress VIP additionally holds FedRAMP authorization for United States federal projects. When evaluating hosting providers, verify that their specific certifications match your organization's compliance requirements.
 
 ## 14. AI Integration Security in WordPress
 
