@@ -30,6 +30,17 @@ WordPress powers over 43% of the internet. While its core security is robust, th
 
 ---
 
+## Project Structure
+
+- **[WordPress-Security-Hardening-Guide.md](WordPress-Security-Hardening-Guide.md)**: Canonical source Markdown for editorial and technical revisions.
+- **[WordPress-Security-Hardening-Guide.docx](WordPress-Security-Hardening-Guide.docx)**: A Microsoft Word `.docx` intermediary generated from Markdown and used as the template source for final publication formats.
+- **[WordPress-Security-Hardening-Guide.epub](WordPress-Security-Hardening-Guide.epub)**: The EPUB version generated from the `.docx` intermediary.
+- **[WordPress-Security-Hardening-Guide.pdf](WordPress-Security-Hardening-Guide.pdf)**: The PDF version generated from the `.docx` intermediary.
+
+Build pipeline: `WordPress-Security-Hardening-Guide.md` -> `WordPress-Security-Hardening-Guide.docx` -> `WordPress-Security-Hardening-Guide.pdf` and `WordPress-Security-Hardening-Guide.epub`.
+
+---
+
 ## Related Documents
 
 This guide is one of four complementary documents covering WordPress security from different angles:
