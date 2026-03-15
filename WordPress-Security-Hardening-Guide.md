@@ -312,7 +312,7 @@ Recommended gated actions include:
 -   Executing WordPress core updates or downgrades.
 -   Exporting site data.
 
-This secondary layer of authentication mitigates the risk of session hijacking, as a stolen session cookie alone is insufficient to perform destructive actions.
+This secondary layer of authentication mitigates the risk of session hijacking, as a stolen session cookie alone is insufficient to perform destructive actions. Managed platforms may provide this capability natively — for example, [WordPress VIP step-up authentication](https://docs.wpvip.com/manage-user-access/vip-dashboard/step-up-auth/) requires MFA reauthentication before accessing higher-risk resources or performing sensitive, irreversible VIP Dashboard actions, with a one-hour unlock window.
 
 ### 8.3 Password Policy
 
