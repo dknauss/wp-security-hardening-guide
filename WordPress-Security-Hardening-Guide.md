@@ -316,7 +316,7 @@ This secondary layer of authentication mitigates the risk of session hijacking, 
 
 ### 8.3 Password Policy
 
--   Enforce strong passwords of at least 12 characters, following NIST SP 800-63B guidelines.
+-   Enforce strong passwords of at least 15 characters as the baseline recommendation, following NIST SP 800-63B Rev. 4 guidance. NIST permits 8 characters only when a password is used solely as part of a multi-factor authentication flow.
 -   Block passwords found in known breach databases (e.g., Have I Been Pwned).
 -   Do not enforce arbitrary complexity rules (e.g., requiring special characters) that encourage predictable patterns; enforce length and entropy instead.
 -   On servers with the necessary PHP extensions, consider enabling Argon2id password hashing via the `wp_hash_password_algorithm` filter for stronger resistance to GPU-accelerated brute-force attacks.
@@ -603,7 +603,7 @@ Use this matrix to keep this guide aligned with the Benchmark and Operations Run
 
 | **Control Area** | **Baseline** | **Optional Hardened** | **Environment-Specific** |
 | :--- | :--- | :--- | :--- |
-| File editor/mods | `DISALLOW_FILE_EDIT = true` | `DISALLOW_FILE_MODS = true` with external update pipeline | Dashboard updates retained where platform process requires it |
+| File editor/mods | `DISALLOW_FILE_EDIT = true` | `DISALLOW_FILE_MODS = true` with external update pipeline | Dashboard updates retained where platform-managed patch cadence requires it |
 | REST API | Public content routes allowed; sensitive routes protected by auth/permissions | Block user-enumeration routes and harden custom endpoint callbacks | Global unauthenticated blocking only for private/intranet deployments |
 | XML-RPC | Keep only when required by integrations | Disable with `xmlrpc_enabled` and/or server-level block when unused | Route/IP allowlisting for required integrations |
 | File ownership | Documented least-privilege model per environment | Per-site process isolation and immutable deploy artifacts | Provider-constrained ownership with compensating controls |
