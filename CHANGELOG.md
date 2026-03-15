@@ -5,6 +5,7 @@ All notable changes to the WordPress Security Hardening Guide.
 ## Unreleased
 
 ### Changed
+- Updated version framing for the WordPress 7.0 release cycle and aligned PHP guidance to the current `8.3+` baseline with `8.4` staging validation.
 - Corrected the password-policy recommendation to restore the 15-character baseline and normalized the cross-document classification matrix wording.
 - Added centered page numbering to `.github/pandoc/reference.docx` so DOCX-derived PDF output includes footer page numbers through the shared generation pipeline.
 - Replaced the repo-local document-generation workflow with a caller to the shared reusable workflow in `ai-assisted-docs`, keeping the primary markdown source and generated artifact names unchanged.

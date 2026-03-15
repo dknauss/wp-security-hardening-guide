@@ -12,7 +12,7 @@ WordPress is the dominant content management system, powering over 43% of the to
 
 This document provides enterprise hardening guidance for the full WordPress stack — core software, plugin, and theme ecosystem, server environment, and organizational security practices. It provides a comprehensive analysis of the WordPress core software, its security architecture, development processes, and recommended hardening practices. It is intended for developers, system administrators, and technical teams responsible for deploying and maintaining WordPress in enterprise environments.
 
-The security information in this document reflects the state of WordPress as of version 6.9 (2026). However, the principles and architectural details described here are broadly applicable to all recent versions due to the project's strong commitment to backward compatibility.
+The security information in this document reflects current WordPress core behavior through the WordPress 7.0 release cycle. Where a security-relevant feature was introduced in an earlier release, that release is named explicitly. The principles and architectural details described here remain broadly applicable to recent supported versions due to the project's strong commitment to backward compatibility.
 
 > **Guideline Notice**
 > This document supplements organizational vulnerability management standards. It is designed as a hardening guide to reduce the exposed attack surface and provide configuration guidance for WordPress deployments.
@@ -158,7 +158,7 @@ Each recommendation in this section corresponds to an auditable control in the [
 
 ### 6.3 PHP and Server-Side Components
 
--   Keep PHP on an actively supported version. As of 2026, PHP 8.2 is in security-only support and PHP 8.3+ is recommended for new deployments.
+-   Keep PHP on an actively supported version. WordPress.org currently recommends PHP 8.3 or greater. Standardize production deployments on PHP 8.3+ and validate PHP 8.4 in staging before production rollout.
 
 -   Harden the PHP runtime: set `expose_php = Off` to prevent version disclosure in HTTP headers, set `display_errors = Off` and `log_errors = On` in production to prevent leaking file paths and database details, disable dangerous functions via `disable_functions` (e.g., `exec`, `passthru`, `shell_exec`, `system`, `proc_open`, `popen`), and restrict PHP file operations with `open_basedir` to the WordPress installation directory and required system paths. For high-security environments, consider the Snuffleupagus PHP security extension to mitigate `eval()` and provide additional hardening beyond `disable_functions`.
 
