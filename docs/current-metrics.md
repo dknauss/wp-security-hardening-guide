@@ -2,7 +2,7 @@
 
 This file is the single source of truth for architectural counts in the WordPress Security Hardening Guide. Check this file before writing any count in prose, and update it when adding or removing sections or structural elements.
 
-Last verified: 2026-03-15
+Last verified: 2026-03-21
 
 ## Architectural Facts
 
@@ -37,6 +37,8 @@ Last verified: 2026-03-15
 | 13 | The Role of the Hosting Provider | 0 |
 | 14 | AI Integration Security in WordPress | 3 |
 | 15 | Additional Resources | 6 |
+| 16 | Related Documents | 0 |
+| 17 | License and Attribution | 0 |
 
 ## Notes
 
@@ -49,7 +51,7 @@ If code blocks or commands are added in future revisions, add verification comma
 Run after any structural edit:
 
 ```bash
-cd /Users/danknauss/Documents/GitHub/wp-security-hardening-guide
+cd /Users/danknauss/Developer/GitHub/wp-security-hardening-guide
 
 echo "=== Document size ==="
 wc -l WordPress-Security-Hardening-Guide.md

@@ -18,7 +18,7 @@ This document is **not** a compliance checklist (use the [Security Benchmark](ht
 
 ## Overview
 
-WordPress powers over 43% of the internet. While its core security is robust, the vast majority of vulnerabilities (90-99%) originate in third-party plugins and themes, misconfigured environments, or compromised user accounts. This guide provides the technical and organizational frameworks necessary to mitigate these risks.
+WordPress powers 42.5% of all websites and 59.8% of websites whose CMS is known (W3Techs, March 21, 2026). While its core security is robust, the vast majority of vulnerabilities originate in third-party plugins and themes, misconfigured environments, or compromised user accounts. This guide provides the technical and organizational frameworks necessary to mitigate these risks.
 
 ### Key Focus Areas:
 - **Core Security Architecture**: Understanding the WordPress Security Team, release cycles, and automatic patching.

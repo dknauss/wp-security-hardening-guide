@@ -8,11 +8,11 @@ version: "1.0"
 
 ## 1. Overview
 
-WordPress is the dominant content management system, powering over 43% of the top 10 million websites and holding a 63% CMS market share (W3Techs, September 2025). Licensed under the GPLv2 or later, WordPress benefits from a large, mature development ecosystem and a dedicated security team. 
+WordPress is the dominant content management system, used by 59.8% of websites whose content management system is known and by 42.5% of all websites (W3Techs, March 21, 2026). Licensed under the GPLv2 or later, WordPress benefits from a large, mature development ecosystem and a dedicated security team.
 
 This document provides enterprise hardening guidance for the full WordPress stack — core software, plugin, and theme ecosystem, server environment, and organizational security practices. It provides a comprehensive analysis of the WordPress core software, its security architecture, development processes, and recommended hardening practices. It is intended for developers, system administrators, and technical teams responsible for deploying and maintaining WordPress in enterprise environments.
 
-The security information in this document reflects current WordPress core behavior through the WordPress 7.0 release cycle. Where a security-relevant feature was introduced in an earlier release, that release is named explicitly. The principles and architectural details described here remain broadly applicable to recent supported versions due to the project's strong commitment to backward compatibility.
+The security information in this document reflects current WordPress core behavior as of WordPress 6.9.4, with forward-looking references to the planned WordPress 7.0 release cycle called out explicitly where relevant. Where a security-relevant feature was introduced in an earlier release, that release is named explicitly. The principles and architectural details described here remain broadly applicable to recent supported versions due to the project's strong commitment to backward compatibility.
 
 > **Guideline Notice**
 > This document supplements organizational vulnerability management standards. It is designed as a hardening guide to reduce the exposed attack surface and provide configuration guidance for WordPress deployments.
@@ -21,9 +21,9 @@ The security information in this document reflects current WordPress core behavi
 
 ## 2. Threat Landscape
 
-The current threat landscape emphasizes that the most significant risks to WordPress deployments come not from the core software itself but from unpatched third-party components (plugins and themes), misconfigured environments, and compromised user accounts. According to annual data from vulnerability databases maintained by Patchstack, WPScan, and Wordfence, 90–99% of all WordPress-related vulnerabilities originate in plugins, not WordPress core or themes.
+The current threat landscape emphasizes that the most significant risks to WordPress deployments come not from the core software itself but from unpatched third-party components (plugins and themes), misconfigured environments, and compromised user accounts. Patchstack's 2026 State of WordPress Security report, covering 2025 data, found that 91% of newly reported vulnerabilities were in plugins, 9% were in themes, and only 6 low-priority issues were reported in WordPress core.
 
-Patchstack's State of WordPress Security report (2026 edition, covering 2025 data) recorded 11,334 WordPress vulnerabilities — a 42% year-over-year increase following 7,966 in 2024 and 5,948 in 2023. Plugins accounted for 10,359 of these, themes 971, and WordPress core just 2. Nearly half (46%) of vulnerabilities had no developer fix at the time of public disclosure, and the weighted median time to first exploit for high-impact vulnerabilities was 5 hours. The 2026 report is also the first to provide exploitation-by-type data (from Patchstack's RapidMitigate blocked-attack telemetry), revealing a dramatic gap between what gets *filed* and what gets *attacked*: Broken Access Control accounts for roughly 14% of discovered vulnerabilities but 57% of exploitation attempts, while Cross-Site Scripting accounts for nearly half of discoveries but only 1% of attacks. This distinction matters for prioritization — vulnerability counts alone do not reflect real-world risk.
+Patchstack's State of WordPress Security report (2026 edition, covering 2025 data) recorded 11,334 WordPress vulnerabilities — a 42% year-over-year increase following 7,966 in 2024 and 5,948 in 2023. Nearly half (46%) of vulnerabilities had no developer fix at the time of public disclosure, and the weighted median time to first exploit for heavily exploited vulnerabilities was 5 hours. Patchstack also reported that Broken Access Control was the most exploited vulnerability category in its RapidMitigate telemetry, reinforcing that real-world attack pressure does not map cleanly to raw disclosure counts alone.
 
 The Verizon Data Breach Investigations Report (2025) analyzed over 22,000 security incidents and 12,195 confirmed breaches. It identifies the human element — including errors, social engineering, and misuse — as a contributing factor in approximately 60% of breaches. Credential abuse remains the most common initial access vector (22%), followed by exploitation of vulnerabilities (20%, a 34% year-over-year increase driven largely by edge device and VPN appliance compromises). Third-party involvement in breaches has doubled to 30%, reinforcing the supply chain risks described in Section 11. Ransomware was present in 44% of breaches (up from 32%), though the median ransom payment declined to $115,000 as 64% of victim organizations refused to pay.
 
@@ -39,13 +39,13 @@ These findings underscore the need for enterprise WordPress teams to adopt robus
 
 ### 3.1 The WordPress Security Team
 
-WordPress core has been actively maintained with security as a first-order concern since the project's founding in 2003. A dedicated Security Team of approximately 50 lead developers and security researchers — some employed by Automattic, others volunteering — is responsible for vulnerability triage, patch development, and coordinated disclosure for the core software. The team maintains working relationships with external researchers, hosting companies, and organizations such as HackerOne (see [WordPress.org Security page](https://wordpress.org/about/security/)).
+WordPress core has been actively maintained with security as a first-order concern since the project's founding in 2003. A dedicated Security Team of more than 50 trusted experts — including lead developers, security researchers, and contributors across the project — is responsible for vulnerability triage, patch development, and coordinated disclosure for the core software. The team maintains working relationships with external researchers, hosting companies, and organizations such as HackerOne (see [WordPress.org Security page](https://wordpress.org/about/security/)).
 
 Vulnerabilities in WordPress core can be reported through the [WordPress HackerOne program](https://hackerone.com/wordpress). The Security Team follows a responsible disclosure process with severity-based triage and coordinated patch timelines. For a detailed account of the team's structure, history, and processes, see the [WordPress Security White Paper](https://wordpress.org/about/security/).
 
 ### 3.2 The Release Cycle
 
-WordPress follows a major/minor versioning scheme. Major releases (e.g., 6.5, 6.6) ship new features on a roughly four-month cycle through a structured process of scoping, development, beta testing, and release candidates. Minor releases (e.g., 6.5.1) contain only security and critical bug fixes. See the [WordPress Release Cycle documentation](https://make.wordpress.org/core/handbook/about/release-cycle/) for process details.
+WordPress follows a major/minor versioning scheme. Major releases (e.g., 6.9, the planned 7.0) ship new features on a roughly four-month cycle through a structured process of scoping, development, beta testing, and release candidates. Minor releases (e.g., 6.9.4) contain only security and critical bug fixes. See the [WordPress Release Cycle documentation](https://make.wordpress.org/core/handbook/about/release-cycle/) for process details.
 
 ### 3.3 Automatic Background Updates
 
@@ -61,7 +61,7 @@ The following describes how WordPress core addresses the OWASP Top 10 Web Applic
 
 ### A01:2025 — Broken Access Control
 
-WordPress provides a granular roles and capabilities system. The core API enforces permission checks before executing any privileged action. Functions like `current_user_can()` verify authorization at the function level. Administrators can further customize roles and capabilities. WordPress uses cryptographic tokens called nonces to validate the intent of action requests and protect against Cross-Site Request Forgery (CSRF). Nonces are scoped to a specific user, action, and time window; they are generated with `wp_create_nonce()` and verified with `wp_verify_nonce()` or `check_ajax_referer()`. All nonces are invalidated on logout. Plugins and themes that handle form submissions or AJAX requests must implement nonce verification — missing or broken nonce checks are among the most common plugin vulnerability patterns. The HTTP API includes built-in SSRF protections (`wp_http_validate_url()`) that block outbound requests to loopback addresses, private IP ranges, and non-standard ports. For defense in depth, supplement these with network-level egress filtering and WAF rules. SSRF — previously a standalone category (A10) in the OWASP Top 10:2021 — is classified under Broken Access Control in the 2025 edition.
+WordPress provides a granular roles and capabilities system. The core API enforces permission checks before executing any privileged action. Functions like `current_user_can()` verify authorization at the function level. Administrators can further customize roles and capabilities. WordPress uses cryptographic tokens called nonces to validate the intent of action requests and protect against Cross-Site Request Forgery (CSRF). Nonces are scoped to a specific user, action, and time window; they are generated with `wp_create_nonce()` and verified with `wp_verify_nonce()` or `check_ajax_referer()`. Nonces are tied to the current user's session and become invalid if the user logs in or out. Plugins and themes that handle form submissions or AJAX requests must implement nonce verification — missing or broken nonce checks are among the most common plugin vulnerability patterns. Safe HTTP request wrappers such as `wp_safe_remote_get()` validate URLs with `wp_http_validate_url()` to reduce Server-Side Request Forgery (SSRF) exposure by rejecting unsafe hosts and ports. For defense in depth, supplement these application-layer checks with network-level egress filtering and WAF rules.
 
 ### A02:2025 — Security Misconfiguration
 
@@ -89,7 +89,7 @@ WordPress handles authentication entirely server-side — passwords are bcrypt-h
 
 ### A08:2025 — Software or Data Integrity Failures
 
-WordPress verifies the integrity of updates through cryptographic signatures. The update system checks package authenticity before applying changes. Plugin and theme updates go through the official repository with hash verification.
+WordPress includes integrity-verification mechanisms for downloaded packages and installed files, and enterprises can supplement them with checksum validation and version-controlled deploys. These controls reduce the risk of tampered code reaching production, but they should be treated as one layer in a broader software integrity program rather than as a complete supply-chain guarantee on their own.
 
 ### A09:2025 — Security Logging and Alerting Failures
 
@@ -273,7 +273,7 @@ The WordPress REST API (`/wp-json/`) provides a structured interface for applica
 
 -   **Data Validation and Sanitization:** REST API endpoints validate input against JSON Schema definitions, isolating invalid data before it reaches callback functions. Custom endpoints should define schemas for all arguments and use the built-in validation and sanitization infrastructure rather than manual parsing.
 
--   **CORS (Cross-Origin Resource Sharing):** The REST API serves appropriate CORS headers to prevent unauthorized cross-domain requests. For sites that serve API responses to specific external origins (e.g., a decoupled front-end on a different domain), configure CORS headers explicitly rather than using a wildcard (`*`).
+-   **CORS (Cross-Origin Resource Sharing):** The REST API sends default CORS headers, but WordPress does not verify the incoming `Origin` header on public REST requests. CSRF protection for cookie-authenticated requests relies on REST nonces instead. If your architecture requires stricter cross-origin controls (for example, a decoupled front-end on a separate domain), replace the default behavior with an explicit origin allowlist rather than using a wildcard (`*`).
 
 -   **Rate Limiting:** Apply rate limiting to REST API routes at the web server level (see Section 6.1) to prevent abuse, enumeration, and resource exhaustion attacks.
 
@@ -323,7 +323,7 @@ This secondary layer of authentication mitigates the risk of session hijacking, 
 
 ### 8.4 Session Management
 
--   Enforce short maximum session lifetimes (8--24 hours for privileged users).
+-   Enforce short maximum session lifetimes (8-24 hours for privileged users).
 -   Disable or minimize the "Remember Me" option for administrator accounts.
 -   Automatically terminate idle sessions after a defined inactivity period.
 -   Terminate all active sessions daily at scheduled times, or on role/permission changes.
