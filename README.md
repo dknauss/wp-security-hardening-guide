@@ -65,6 +65,14 @@ To get the most out of this repository:
 2. Cross-reference your current configuration with the **[Security Benchmark](https://github.com/dknauss/wp-security-benchmark)**.
 3. Review the **Executive Summary** in Section 2 for the latest threat landscape data from Verizon and IBM.
 
+## Project Health
+
+- Contributions: see **[CONTRIBUTING.md](CONTRIBUTING.md)**.
+- Security reporting: see **[SECURITY.md](SECURITY.md)**.
+- Community expectations: see **[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)**.
+- Support boundaries: see **[SUPPORT.md](SUPPORT.md)**.
+- License: **[LICENSE](LICENSE)**.
+
 ---
 
 ## Contributors

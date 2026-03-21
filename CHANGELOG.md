@@ -8,6 +8,7 @@ All notable changes to the WordPress Security Hardening Guide.
 - Corrected stale repository metadata in `docs/current-metrics.md` by restoring the full 17-section map and updating the local verification path.
 - Updated market-share, version-context, and security-architecture wording in the guide and README to reflect the current WordPress 6.9.4 / planned 7.0 state and current W3Techs figures.
 - Tightened high-risk technical guidance around REST API CORS behavior, safe HTTP SSRF protections, and software integrity wording to avoid overstating what WordPress core guarantees.
+- Added repository hygiene files (`CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SUPPORT.md`, `LICENSE`, `.gitattributes`) and linked them from the README so GitHub community health reflects the repo's intended maintenance model.
 - Cited WordPress VIP step-up authentication as an example platform implementation of action-gated reauthentication in §8.2.
 - Updated version framing for the WordPress 7.0 release cycle and aligned PHP guidance to the current `8.3+` baseline with `8.4` staging validation.
 - Corrected the password-policy recommendation to restore the 15-character baseline and normalized the cross-document classification matrix wording.
