@@ -51,7 +51,7 @@ If code blocks or commands are added in future revisions, add verification comma
 Run after any structural edit:
 
 ```bash
-cd /Users/danknauss/Developer/GitHub/wp-security-hardening-guide
+cd "$(git rev-parse --show-toplevel)"
 
 echo "=== Document size ==="
 wc -l WordPress-Security-Hardening-Guide.md

@@ -4,8 +4,11 @@ All notable changes to the WordPress Security Hardening Guide.
 
 ## Unreleased
 
+## 1.1.0 — 2026-03-21
+
 ### Changed
 - Replaced the ad hoc license file with the canonical Creative Commons BY-SA 4.0 legal text and normalized in-repo license references to `CC-BY-SA-4.0` for GitHub license detection consistency.
+- Replaced the hard-coded local verification path in `docs/current-metrics.md` with `git rev-parse --show-toplevel` for path-independent maintenance checks.
 - Corrected stale repository metadata in `docs/current-metrics.md` by restoring the full 17-section map and updating the local verification path.
 - Updated market-share, version-context, and security-architecture wording in the guide and README to reflect the current WordPress 6.9.4 / planned 7.0 state and current W3Techs figures.
 - Tightened high-risk technical guidance around REST API CORS behavior, safe HTTP SSRF protections, and software integrity wording to avoid overstating what WordPress core guarantees.
