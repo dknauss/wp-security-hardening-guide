@@ -1,0 +1,30 @@
+name: Bug report
+description: Report inaccurate hardening guidance, artifact issues, or workflow failures.
+title: "[Bug]: "
+labels: ["bug", "triage"]
+body:
+  - type: input
+    id: area
+    attributes:
+      label: Affected area
+      description: Name the section, command example, artifact, or workflow involved.
+      placeholder: Section 4, Nginx snippet, release workflow
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction details
+      description: Include references, commands, screenshots, or supporting evidence.
