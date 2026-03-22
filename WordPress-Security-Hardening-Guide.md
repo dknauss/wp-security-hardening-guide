@@ -12,7 +12,7 @@ WordPress is the dominant content management system, used by 59.8% of websites w
 
 This document provides enterprise hardening guidance for the full WordPress stack — core software, plugin, and theme ecosystem, server environment, and organizational security practices. It provides a comprehensive analysis of the WordPress core software, its security architecture, development processes, and recommended hardening practices. It is intended for developers, system administrators, and technical teams responsible for deploying and maintaining WordPress in enterprise environments.
 
-The security information in this document reflects current WordPress core behavior as of WordPress 6.9.4, with forward-looking references to the planned WordPress 7.0 release cycle called out explicitly where relevant. Where a security-relevant feature was introduced in an earlier release, that release is named explicitly. The principles and architectural details described here remain broadly applicable to recent supported versions due to the project's strong commitment to backward compatibility.
+The security information in this document reflects current WordPress core behavior as of WordPress 6.9.1 on March 21, 2026, with forward-looking references to WordPress 7.0 as scheduled for April 9, 2026 called out explicitly where relevant. Where a security-relevant feature was introduced in an earlier release, that release is named explicitly. The principles and architectural details described here remain broadly applicable to recent supported versions due to the project's strong commitment to backward compatibility.
 
 > **Guideline Notice**
 > This document supplements organizational vulnerability management standards. It is designed as a hardening guide to reduce the exposed attack surface and provide configuration guidance for WordPress deployments.
@@ -45,7 +45,7 @@ Vulnerabilities in WordPress core can be reported through the [WordPress HackerO
 
 ### 3.2 The Release Cycle
 
-WordPress follows a major/minor versioning scheme. Major releases (e.g., 6.9, the planned 7.0) ship new features on a roughly four-month cycle through a structured process of scoping, development, beta testing, and release candidates. Minor releases (e.g., 6.9.4) contain only security and critical bug fixes. See the [WordPress Release Cycle documentation](https://make.wordpress.org/core/handbook/about/release-cycle/) for process details.
+WordPress follows a major/minor versioning scheme. Major releases (e.g., 6.9, with 7.0 scheduled for April 9, 2026) ship new features on a roughly four-month cycle through a structured process of scoping, development, beta testing, and release candidates. Minor releases (e.g., 6.9.1) contain maintenance and security fixes. See the [WordPress Release Cycle documentation](https://make.wordpress.org/core/handbook/about/release-cycle/) for process details.
 
 ### 3.3 Automatic Background Updates
 
