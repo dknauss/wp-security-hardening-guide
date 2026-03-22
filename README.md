@@ -72,6 +72,7 @@ To get the most out of this repository:
 - Community expectations: see **[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)**.
 - Support boundaries: see **[SUPPORT.md](SUPPORT.md)**.
 - License: **[LICENSE](LICENSE)**.
+- Coordinated series release notes: **[docs/series-release-summary-2026-03-21.md](docs/series-release-summary-2026-03-21.md)**.
 
 ---
 
@@ -88,7 +89,7 @@ This document and the three related documents in this series are revised with th
 
 ---
 
-## License and Attribution
+## License
 
 This project is licensed under the **[Creative Commons Attribution-ShareAlike 4.0 International License (CC-BY-SA-4.0)](https://creativecommons.org/licenses/by-sa/4.0/)**.
 
