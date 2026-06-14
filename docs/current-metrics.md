@@ -2,13 +2,13 @@
 
 This file is the single source of truth for architectural counts in the WordPress Security Hardening Guide. Check this file before writing any count in prose, and update it when adding or removing sections or structural elements.
 
-Last verified: 2026-03-21
+Last verified: 2026-06-14
 
 ## Architectural Facts
 
 | Fact | Value | Verification command | Last changed |
 |---|---:|---|---|
-| Document lines | 621 | `wc -l WordPress-Security-Hardening-Guide.md` | v1.0 |
+| Document lines | 627 | `wc -l WordPress-Security-Hardening-Guide.md` | 2026-06-14 |
 | Major sections (H2) | 17 | `grep -cE '^## ' WordPress-Security-Hardening-Guide.md` | v1.0 |
 | Subsections (H3) | 50 | `grep -cE '^### ' WordPress-Security-Hardening-Guide.md` | v1.0 |
 | OWASP Top 10 categories covered | 10 | A01–A10:2025 in section 4 | v1.0 |

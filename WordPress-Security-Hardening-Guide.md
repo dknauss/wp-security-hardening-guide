@@ -12,7 +12,7 @@ WordPress is the dominant content management system, used by 59.8% of websites w
 
 This document provides enterprise hardening guidance for the full WordPress stack — core software, plugin, and theme ecosystem, server environment, and organizational security practices. It provides a comprehensive analysis of the WordPress core software, its security architecture, development processes, and recommended hardening practices. It is intended for developers, system administrators, and technical teams responsible for deploying and maintaining WordPress in enterprise environments.
 
-The security information in this document reflects current WordPress core behavior as of WordPress 6.9.1 on March 21, 2026, with forward-looking references to WordPress 7.0 as scheduled for April 9, 2026 called out explicitly where relevant. Where a security-relevant feature was introduced in an earlier release, that release is named explicitly. The principles and architectural details described here remain broadly applicable to recent supported versions due to the project's strong commitment to backward compatibility.
+The security information in this document reflects current WordPress core behavior through WordPress 7.0, released on May 20, 2026. Where a security-relevant feature was introduced in an earlier release, that release is named explicitly. The principles and architectural details described here remain broadly applicable to recent supported versions due to the project's strong commitment to backward compatibility.
 
 > **Guideline Notice**
 > This document supplements organizational vulnerability management standards. It is designed as a hardening guide to reduce the exposed attack surface and provide configuration guidance for WordPress deployments.
@@ -45,7 +45,7 @@ Vulnerabilities in WordPress core can be reported through the [WordPress HackerO
 
 ### 3.2 The Release Cycle
 
-WordPress follows a major/minor versioning scheme. Major releases (e.g., 6.9, with 7.0 scheduled for April 9, 2026) ship new features on a roughly four-month cycle through a structured process of scoping, development, beta testing, and release candidates. Minor releases (e.g., 6.9.1) contain maintenance and security fixes. See the [WordPress Release Cycle documentation](https://make.wordpress.org/core/handbook/about/release-cycle/) for process details.
+WordPress follows a major/minor versioning scheme. Major releases (for example, WordPress 7.0, released on May 20, 2026) ship new features on a roughly four-month cycle through a structured process of scoping, development, beta testing, and release candidates. Minor releases (for example, 6.9.x or 7.0.x) contain maintenance and security fixes. See the [WordPress Release Cycle documentation](https://make.wordpress.org/core/handbook/about/release-cycle/) for process details.
 
 ### 3.3 Automatic Background Updates
 
@@ -73,7 +73,7 @@ The core team monitors and updates bundled libraries (jQuery, TinyMCE, PHPMailer
 
 ### A04:2025 — Cryptographic Failures
 
-As of WordPress 6.8, passwords are hashed with bcrypt (SHA-384 pre-hashed to work around bcrypt's 72-byte input limit), and security tokens — including application passwords and password reset keys — use BLAKE2b via libsodium. Sites with the necessary server support (PHP 7.3+ with the sodium or argon2 extension) can enable Argon2id hashing via the `wp_hash_password_algorithm` filter for even stronger resistance to brute-force and GPU-accelerated attacks. WordPress supports HTTPS enforcement through configuration constants and provides salting via security keys defined in `wp-config.php`. Sensitive data like user email addresses and private content is access-controlled through the permissions system.
+As of WordPress 6.8, passwords are hashed with bcrypt (SHA-384 pre-hashed to work around bcrypt's 72-byte input limit), and security tokens — including application passwords and password reset keys — use BLAKE2b via libsodium. On supported WordPress 7.0 environments (PHP 7.4+), sites with the necessary `sodium` or Argon2 support can enable Argon2id hashing via the `wp_hash_password_algorithm` filter for even stronger resistance to brute-force and GPU-accelerated attacks. WordPress supports HTTPS enforcement through configuration constants and provides salting via security keys defined in `wp-config.php`. Sensitive data like user email addresses and private content is access-controlled through the permissions system.
 
 ### A05:2025 — Injection
 
@@ -530,6 +530,8 @@ Leading enterprise WordPress hosts hold certifications such as SOC 2, PCI DSS, a
 
 As organizations integrate Generative AI (GenAI) into their WordPress workflows — for content generation, chat interfaces, and automated site management — new security considerations emerge. These risks are no longer theoretical: IBM's Cost of a Data Breach Report (2025) found that 13% of organizations experienced a breach involving an AI model or application, and 97% of those breaches involved AI systems lacking proper access controls. The most common AI-specific attack types were supply chain compromise of AI components (30%), model inversion (24%), model evasion (21%), prompt injection (17%), and data poisoning (15%).
 
+WordPress 7.0 makes this discussion more concrete by shipping first-party AI-adjacent infrastructure, including the `WP AI Client`, the client-side `Abilities API`, the `AI Connectors` screen, and the `Connectors API`. For enterprise teams, these are not merely convenience features; they create new secret-management, authorization-boundary, and provider-governance decisions that should be handled as part of the platform security model.
+
 ### 14.1 AI as an Attack Vector
 
 AI tools are increasingly weaponized by threat actors. The Verizon DBIR (2025) found that AI-assisted malicious emails have doubled over the past two years. IBM reports that 16% of breaches now involve attackers using AI, with 37% employing AI-generated phishing and 35% using deepfake-based social engineering. For WordPress sites, this means:
@@ -545,12 +547,16 @@ For WordPress teams, shadow AI risks include content contributors pasting sensit
 
 ### 14.3 Securing AI Integrations in WordPress
 
+When WordPress 7.0 AI infrastructure is in scope, treat connectors, prompt execution paths, and abilities registration as security-relevant application surfaces, not just developer ergonomics.
+
 -   **Data Privacy:** Ensure that sensitive site data or user information is not inadvertently sent to LLM providers during prompt processing. Use private or enterprise-tier AI services that guarantee data will not be used for model training.
 -   **Prompt Injection:** Sanitize and validate all user inputs used in AI prompts to prevent injection attacks that could trick the AI into revealing sensitive information or executing unauthorized commands. This applies to AI-powered chatbots, search features, and content generation tools integrated with WordPress.
 -   **Output Sanitization:** Treat GenAI-generated content as untrusted user input. Always sanitize and escape AI outputs before displaying them on the site or executing them as code (e.g., in automated site management tools).
 -   **Access Controls for AI Systems:** Implement proper authentication and authorization for all AI model endpoints and APIs. IBM found that 97% of AI-related breaches involved systems lacking proper access controls — apply the same role-based access control principles used for WordPress itself to any AI integrations.
+-   **Client-Side Prompt Execution:** Treat arbitrary browser-side prompt execution as a high-privilege pattern. The WordPress 7.0 JavaScript AI API uses REST endpoints under the hood and is intentionally restricted because it can send arbitrary prompts to configured providers. For general plugin and site features, prefer narrow server-side REST endpoints with granular permission checks, and keep prompt construction, provider selection, and connector configuration scoped server-side.
+-   **Abilities API Boundaries:** Treat the Abilities API as an authorization surface. Abilities exposed through `/wp-abilities/v1/` should follow the same least-privilege design expectations as any other capability-sensitive REST integration, especially where AI agents or workflow tools are involved.
 -   **Copyright and Compliance:** Monitor AI-generated content for copyright compliance and ensure that AI-assisted workflows align with organizational and legal disclosure requirements.
--   **API Key Management:** Securely store and manage API keys for GenAI services. Never expose keys in client-side code and rotate them regularly. Store keys in `wp-config.php` constants or environment variables, not in the database where they may be exposed through SQL injection or backup leaks.
+-   **API Key Management:** Securely store and manage API keys for GenAI services. Never expose keys in client-side code and rotate them regularly. In WordPress 7.0, the Connectors API can source credentials from environment variables, PHP constants, or the database. Prefer environment variables or `wp-config.php` constants. Database-backed connector secrets are masked in the interface but not encrypted, so they should be treated as a lower-assurance fallback rather than the preferred operational model.
 
 ## 15. Additional Resources
 
