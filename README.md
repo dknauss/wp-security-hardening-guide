@@ -1,5 +1,5 @@
 # WordPress Security Hardening Guide
-[![License](https://img.shields.io/github/license/dknauss/wp-security-hardening-guide)](LICENSE) [![CI](https://github.com/dknauss/wp-security-hardening-guide/actions/workflows/generate-docs.yml/badge.svg)](https://github.com/dknauss/wp-security-hardening-guide/actions/workflows/generate-docs.yml) [![Latest Release](https://img.shields.io/github/v/release/dknauss/wp-security-hardening-guide)](https://github.com/dknauss/wp-security-hardening-guide/releases) [![Security Policy](https://img.shields.io/badge/security-policy-4c1)](SECURITY.md)
+[![License](https://img.shields.io/github/license/dknauss/wp-security-hardening-guide)](LICENSE) [![CI](https://github.com/dknauss/wp-security-hardening-guide/actions/workflows/generate-docs.yml/badge.svg)](https://github.com/dknauss/wp-security-hardening-guide/actions/workflows/generate-docs.yml) [![Latest Release](https://img.shields.io/github/v/release/dknauss/wp-security-hardening-guide)](https://github.com/dknauss/wp-security-hardening-guide/releases) [![Security Policy](https://img.shields.io/badge/security-policy-4c1)](SECURITY.md) [![AI Authorship](https://img.shields.io/badge/AI%20authorship-disclosed-8a63d2.svg)](docs/ai-authorship.md)
 
 
 **Enterprise Best Practices and Threat Mitigation for the Modern WordPress Ecosystem.**
