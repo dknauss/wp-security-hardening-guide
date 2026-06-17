@@ -12,6 +12,7 @@ All notable changes to the WordPress Security Hardening Guide.
 - Added Learn WordPress's [Writing in the WordPress voice](https://learn.wordpress.org/course/writing-in-the-wordpress-voice/) as the recommended WordPress-specific voice and accessibility reference for user-facing hardening guidance and communications.
 
 ### Changed
+- Made the generated-artifact validator read the expected version string from the Markdown frontmatter instead of hardcoding `Version 1.1`, preventing future publish-flow failures after routine version bumps.
 - Separated Playwright PDF visual validation from the artifact publish path so `generate-docs.yml` can publish after artifact checks while the dedicated visual workflow handles layout regression checks on workflow, packaging, and Pandoc changes.
 - Corrected current-version framing to reflect the public WordPress 7.0 release and remove stale pre-release scheduling language.
 - Refined PHP and AI guidance for WordPress 7.0 by aligning Argon2 wording to the new PHP 7.4 support floor and adding source-backed guidance for the AI Client, Abilities API, and Connectors API.
