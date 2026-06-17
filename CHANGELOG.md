@@ -9,11 +9,13 @@ All notable changes to the WordPress Security Hardening Guide.
 - Added a repo-local generated-artifact smoke validator and a dedicated `Validate Artifacts` workflow for PDF, EPUB, and DOCX outputs.
 - Added a Playwright-based PDF visual smoke test and dedicated workflow with committed baselines for critical page regions.
 - Added a cross-format parity check so a small set of canonical phrases must remain present in the Markdown source and generated PDF, EPUB, and DOCX outputs.
+- Added Learn WordPress's [Writing in the WordPress voice](https://learn.wordpress.org/course/writing-in-the-wordpress-voice/) as the recommended WordPress-specific voice and accessibility reference for user-facing hardening guidance and communications.
 
 ### Changed
 - Separated Playwright PDF visual validation from the artifact publish path so `generate-docs.yml` can publish after artifact checks while the dedicated visual workflow handles layout regression checks on workflow, packaging, and Pandoc changes.
 - Corrected current-version framing to reflect the public WordPress 7.0 release and remove stale pre-release scheduling language.
 - Refined PHP and AI guidance for WordPress 7.0 by aligning Argon2 wording to the new PHP 7.4 support floor and adding source-backed guidance for the AI Client, Abilities API, and Connectors API.
+- Replaced the softer term "AI-adjacent infrastructure" with "AI integration infrastructure" for clearer security guidance wording.
 - Refactored the document-generation pipeline into explicit build, validate, and publish jobs so generated artifacts are validated before the bot commit step runs.
 - Updated GitHub Action pins in the PDF visual validation workflow to Node 24-capable major versions to avoid runner deprecation warnings.
 - Set a short PDF running header title so the guide subtitle no longer appears in page headers.
