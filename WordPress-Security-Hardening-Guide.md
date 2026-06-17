@@ -3,7 +3,7 @@ title: "WordPress Security Architecture and Hardening Guide"
 subtitle: "Enterprise Best Practices and Threat Mitigation"
 editor: "Dan Knauss"
 date: "June 17, 2026"
-version: "1.1"
+version: "1.1.1"
 ---
 
 ## 1. Overview
