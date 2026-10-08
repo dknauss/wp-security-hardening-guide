@@ -16,6 +16,7 @@ All notable changes to the WordPress Security Hardening Guide.
 - Reworded two threat-landscape claims to what the cited sources support.
 
 ### Changed
+- Regenerated the PDF, DOCX, and EPUB files from the corrected Markdown and refreshed the PDF visual baselines, which had not been updated since March 2026.
 - Scope now covers WordPress 7.1 (current 7.1.3) and notes that 7.2 (scheduled December 8, 2026) is not covered.
 - §14: Abilities API guidance covers the 7.1 `public` exposure flag and execution lifecycle filters.
 - §3.3 cites the 7.1.1 and 7.1.3 security releases; CSP guidance notes the 7.1 `worker-src` requirement.
