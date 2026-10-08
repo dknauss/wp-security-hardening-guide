@@ -5,6 +5,9 @@ All notable changes to the WordPress Security Hardening Guide.
 ## Unreleased
 
 ### Fixed
+- §14: corrected the description of the Abilities API lifecycle filters after verification against WordPress 7.1.3 core (`wp_pre_execute_ability` does not bypass the permission check on the REST run endpoint).
+
+### Fixed
 - Corrected findings from the 2026-10-07 documentation review and verification round. Recorded in `ai-assisted-docs/reviews/rounds/2026-10-07/`.
 - §3.3 and §5: replaced the promise of security backports to WordPress 3.7 with the current courtesy-backport policy.
 - Application passwords are described as revocable but not permission-scoped.
