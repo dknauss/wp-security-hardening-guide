@@ -4,6 +4,23 @@ All notable changes to the WordPress Security Hardening Guide.
 
 ## Unreleased
 
+### Fixed
+- Corrected findings from the 2026-10-07 documentation review and verification round. Recorded in `ai-assisted-docs/reviews/rounds/2026-10-07/`.
+- §3.3 and §5: replaced the promise of security backports to WordPress 3.7 with the current courtesy-backport policy.
+- Application passwords are described as revocable but not permission-scoped.
+- §7.2 and §15.6: `xmlrpc_enabled` is described as a partial measure; `system.multicall` amplification is marked historical.
+- §8.1: stated that the `two-factor` plugin does not enforce 2FA and stores TOTP secrets unencrypted. §8.5: role definitions in code are described as an auditable source of truth, not tamper protection.
+- §14.3: prompt-injection and AI output guidance no longer presents sanitization as sufficient.
+- §13: distinguished certification, attestation, validation, and authorization.
+- §6.3: `open_basedir` identified as a Level 2 control.
+- Reworded two threat-landscape claims to what the cited sources support.
+
+### Changed
+- Scope now covers WordPress 7.1 (current 7.1.3) and notes that 7.2 (scheduled December 8, 2026) is not covered.
+- §14: Abilities API guidance covers the 7.1 `public` exposure flag and execution lifecycle filters.
+- §3.3 cites the 7.1.1 and 7.1.3 security releases; CSP guidance notes the 7.1 `worker-src` requirement.
+- `CONTRIBUTING.md` describes the current manual build and release flow. `CLAUDE.md` uses portable command names.
+
 ## 1.1.1 — 2026-06-17
 
 ### Added
