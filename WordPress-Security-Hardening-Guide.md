@@ -12,7 +12,7 @@ WordPress is the dominant content management system, used by 59.8% of websites w
 
 This document provides enterprise hardening guidance for the full WordPress stack — core software, plugin, and theme ecosystem, server environment, and organizational security practices. It provides a comprehensive analysis of the WordPress core software, its security architecture, development processes, and recommended hardening practices. It is intended for developers, system administrators, and technical teams responsible for deploying and maintaining WordPress in enterprise environments.
 
-The security information in this document reflects current WordPress core behavior through WordPress 7.0, released on May 20, 2026. Where a security-relevant feature was introduced in an earlier release, that release is named explicitly. The principles and architectural details described here remain broadly applicable to recent supported versions due to the project's strong commitment to backward compatibility.
+The security information in this document reflects WordPress core behavior through WordPress 7.1, released on August 19, 2026 (current release as of October 7, 2026: 7.1.3). WordPress 7.2 is scheduled for December 8, 2026 and is not covered. Where a security-relevant feature was introduced in an earlier release, that release is named explicitly. The principles and architectural details described here remain broadly applicable to recent supported versions due to the project's strong commitment to backward compatibility.
 
 > **Guideline Notice**
 > This document supplements organizational vulnerability management standards. It is designed as a hardening guide to reduce the exposed attack surface and provide configuration guidance for WordPress deployments.
@@ -45,11 +45,11 @@ Vulnerabilities in WordPress core can be reported through the [WordPress HackerO
 
 ### 3.2 The Release Cycle
 
-WordPress follows a major/minor versioning scheme. Major releases (for example, WordPress 7.0, released on May 20, 2026) ship new features on a roughly four-month cycle through a structured process of scoping, development, beta testing, and release candidates. Minor releases (for example, 6.9.x or 7.0.x) contain maintenance and security fixes. See the [WordPress Release Cycle documentation](https://make.wordpress.org/core/handbook/about/release-cycle/) for process details.
+WordPress follows a major/minor versioning scheme. Major releases (for example, WordPress 7.0 on May 20, 2026 and 7.1 on August 19, 2026, with 7.2 scheduled for December 8, 2026) ship new features on a three-to-four-month cycle through a structured process of scoping, development, beta testing, and release candidates. Minor releases (for example, 6.9.x or 7.0.x) contain maintenance and security fixes. See the [WordPress Release Cycle documentation](https://make.wordpress.org/core/handbook/about/release-cycle/) for process details.
 
 ### 3.3 Automatic Background Updates
 
-Automatic background updates for minor security releases have been enabled by default since WordPress 3.7, covering all supported versions back to 3.7. Enterprise environments should verify this capability remains active and supplement it with managed hosting update pipelines that include staging validation and rollback capability. Disabling automatic updates is possible but strongly discouraged — it shifts the burden of timely patching entirely to the site operator.
+Automatic background updates for minor security releases have been enabled by default since WordPress 3.7. Only the most recent WordPress release is officially supported; the security team backports fixes to some older branches as a courtesy (as of October 2026, back to 4.7), and that floor moves — security updates for 3.7 through 4.0 ended on December 1, 2022. Enterprise environments should verify this capability remains active and supplement it with managed hosting update pipelines that include staging validation and rollback capability. Disabling automatic updates is possible but strongly discouraged — it shifts the burden of timely patching entirely to the site operator. The pace of security releases shows why: WordPress [7.1.1](https://wordpress.org/news/2026/09/wordpress-7-1-1-maintenance-and-security-release/) (September 17, 2026) and [7.1.3](https://wordpress.org/news/2026/10/wordpress-7-1-3-maintenance-and-security-release/) (October 6, 2026) together fixed 18 security issues within seven weeks of the 7.1 release, including a stored cross-site scripting issue reachable by unauthenticated visitors.
 
 ### 3.4 Backward Compatibility
 
@@ -85,7 +85,7 @@ WordPress core follows security-by-default principles. Default settings are eval
 
 ### A07:2025 — Authentication Failures
 
-WordPress handles authentication entirely server-side — passwords are bcrypt-hashed (see A04 above) and session tokens are invalidated on logout. The platform supports application passwords for REST API and XML-RPC authentication — these provide secure, scoped credentials that are revocable and not valid for Dashboard login, though they bypass 2FA and should be managed carefully (see Section 8). WordPress is compatible with two-factor authentication plugins.
+WordPress handles authentication entirely server-side — passwords are bcrypt-hashed (see A04 above) and session tokens are invalidated on logout. The platform supports application passwords for REST API and XML-RPC authentication — these are individually named and revocable credentials that are not valid for Dashboard login. They are not permission-scoped: each application password carries the full capabilities of the user who owns it. They also bypass 2FA and should be managed carefully (see Section 8). WordPress is compatible with two-factor authentication plugins.
 
 ### A08:2025 — Software or Data Integrity Failures
 
@@ -102,7 +102,7 @@ WordPress core includes structured error handling through the `WP_Error` class a
 ## 5. Keeping WordPress Up to Date
 
 > **Key Principle**
-> Only the latest major version of WordPress receives new features and full development support. However, the security team backports critical security patches to all versions with automatic background update capability (currently back to WordPress 3.7). Keeping WordPress core, all plugins, and all themes up to date remains the single most important security measure for any WordPress deployment.
+> Only the latest major version of WordPress receives new features and full development support. However, the security team backports critical security patches to a range of older branches as a courtesy, not a commitment (as of October 2026, back to WordPress 4.7; updates for 3.7 through 4.0 [ended on December 1, 2022](https://make.wordpress.org/security/2022/09/07/dropping-security-updates-for-wordpress-versions-3-7-through-4-0/)). An older branch that still receives backports is not a supported version. Keeping WordPress core, all plugins, and all themes up to date remains the single most important security measure for any WordPress deployment.
 
 Unpatched software is the most common technical root cause of WordPress compromises. Vulnerability databases consistently show that outdated plugins with known, publicly disclosed vulnerabilities are the primary attack vector.
 
@@ -135,7 +135,7 @@ Each recommendation in this section corresponds to an auditable control in the [
 -   **Hide Server Tokens:** Configure the web server to suppress version numbers and operating system information in HTTP headers and error pages (`server_tokens off` in Nginx; `ServerTokens Prod` and `ServerSignature Off` in Apache).
 
 -   **HTTP Security Headers:** Implement a robust set of security headers to instruct the browser to enable built-in protections:
-    -   `Content-Security-Policy` (CSP): Restrict sources of scripts, styles, and other resources. Level 2 configurations should aim to remove `unsafe-inline` through the use of nonces or hashes.
+    -   `Content-Security-Policy` (CSP): Restrict sources of scripts, styles, and other resources. Level 2 configurations should aim to remove `unsafe-inline` through the use of nonces or hashes. From WordPress 7.1, the block editor's client-side media processing runs in a Web Worker loaded from a `blob:` URL; a policy without `worker-src 'self' blob:` blocks it and WordPress falls back to server-side processing.
     -   `X-Content-Type-Options`: Set to `nosniff` to prevent MIME-type confusion.
     -   `X-Frame-Options`: Set to `SAMEORIGIN` or `DENY` to protect against clickjacking.
     -   `Strict-Transport-Security` (HSTS): Enforce HTTPS for a specified duration (e.g., one year).
@@ -160,7 +160,7 @@ Each recommendation in this section corresponds to an auditable control in the [
 
 -   Keep PHP on an actively supported version. WordPress.org currently recommends PHP 8.3 or greater. Standardize production deployments on PHP 8.3+ and validate PHP 8.4 in staging before production rollout.
 
--   Harden the PHP runtime: set `expose_php = Off` to prevent version disclosure in HTTP headers, set `display_errors = Off` and `log_errors = On` in production to prevent leaking file paths and database details, disable dangerous functions via `disable_functions` (e.g., `exec`, `passthru`, `shell_exec`, `system`, `proc_open`, `popen`), and restrict PHP file operations with `open_basedir` to the WordPress installation directory and required system paths. For high-security environments, consider the Snuffleupagus PHP security extension to mitigate `eval()` and provide additional hardening beyond `disable_functions`.
+-   Harden the PHP runtime: set `expose_php = Off` to prevent version disclosure in HTTP headers, set `display_errors = Off` and `log_errors = On` in production to prevent leaking file paths and database details, disable dangerous functions via `disable_functions` (e.g., `exec`, `passthru`, `shell_exec`, `system`, `proc_open`, `popen`), and restrict PHP file operations with `open_basedir` to the WordPress installation directory and required system paths. The first three are baseline (Benchmark Level 1) controls; `open_basedir` is an optional, environment-specific (Level 2) control and, per the PHP manual, is not a complete security boundary. For high-security environments, consider the Snuffleupagus PHP security extension to mitigate `eval()` and provide additional hardening beyond `disable_functions`.
 
 -   Configure PHP session security: set `session.cookie_secure = 1`, `session.cookie_httponly = 1`, `session.cookie_samesite = Lax`, `session.use_strict_mode = 1`, and `session.use_only_cookies = 1`. Note: WordPress core does not use PHP native sessions — these settings are defense-in-depth for plugins that call `session_start()`.
 
@@ -217,7 +217,7 @@ Set the following security-related constants in `wp-config.php`:
 
 ### 7.2 Disable Unused Features
 
--   **Disable XML-RPC** if not required (common attack vector for brute-force amplification). WordPress core disables the loading of custom XML entities to prevent XML eXternal Entity (XXE) and entity expansion attacks, but disabling XML-RPC entirely removes the endpoint from the attack surface. Block `xmlrpc.php` at the web server level (preferred) or disable it via a must-use plugin (`add_filter( 'xmlrpc_enabled', '__return_false' )`). Do not rely on `wp-config.php` constants — `XMLRPC_REQUEST` is a read-only internal constant that WordPress sets during XML-RPC processing and cannot be used to disable the feature.
+-   **Disable XML-RPC** if not required. It is a second password-authentication surface, and its pingback methods have been abused for DDoS reflection. (The `system.multicall` brute-force amplification technique is historical: since WordPress 4.4, core stops evaluating credentials for the rest of a request after the first failed login.) WordPress core disables the loading of custom XML entities to prevent XML eXternal Entity (XXE) and entity expansion attacks, but disabling XML-RPC entirely removes the endpoint from the attack surface. Block `xmlrpc.php` at the web server level; this is the only complete block. The `xmlrpc_enabled` filter (`add_filter( 'xmlrpc_enabled', '__return_false' )`) is a partial measure: [it turns off only the methods that require authentication](https://developer.wordpress.org/reference/hooks/xmlrpc_enabled/) and leaves pingbacks and other unauthenticated methods available. Do not rely on `wp-config.php` constants — `XMLRPC_REQUEST` is a read-only internal constant that WordPress sets during XML-RPC processing and cannot be used to disable the feature.
 
 -   **Disable trackbacks and pingbacks** in **Settings → Discussion**. Trackbacks operate independently of `xmlrpc.php` and must be disabled separately.
 
@@ -265,7 +265,7 @@ WordPress Multisite enables a single WordPress installation to serve a network o
 
 The WordPress REST API (`/wp-json/`) provides a structured interface for applications to interact with WordPress over HTTP. It powers the block editor, mobile apps, headless front-ends, and third-party integrations. Because of its broad surface area, securing the REST API is essential for any enterprise deployment.
 
--   **Authentication Methods:** The REST API supports cookie-based authentication (with nonce validation for CSRF protection), application passwords (scoped, revocable credentials that do not grant Dashboard login access), and extensible authentication via plugins (OAuth 2.0, JWT, etc.). Choose the method appropriate to each integration and enforce the principle of least privilege.
+-   **Authentication Methods:** The REST API supports cookie-based authentication (with nonce validation for CSRF protection), application passwords (individually revocable credentials that do not grant Dashboard login access but carry the owning user's full capabilities — issue them from a dedicated least-privilege integration account, not an administrator's), and extensible authentication via plugins (OAuth 2.0, JWT, etc.). Choose the method appropriate to each integration and enforce the principle of least privilege.
 
 -   **Permission Callbacks:** Every REST API endpoint includes a `permission_callback` that determines whether the current user is authorized to perform the requested action. Custom endpoints must always implement permission checks — endpoints without them are publicly accessible by default.
 
@@ -279,23 +279,23 @@ The WordPress REST API (`/wp-json/`) provides a structured interface for applica
 
 ## 8. User Authentication and Session Security
 
-User authentication and session management represent the most critical—and most frequently exploited—aspects of WordPress security. The majority of enterprise WordPress breaches involve compromised user credentials or hijacked sessions.
+User authentication and session management represent the most critical—and most frequently exploited—aspects of WordPress security. Compromised user credentials and hijacked sessions are among the most common ways WordPress sites are breached.
 
 > **Current Threat Context**
-> The Verizon DBIR (2025) found that credential abuse remains the most common initial access vector (22% of breaches), and the SpyCloud Annual Identity Exposure Report (2025) confirms the scale of the underlying problem: over 750 million credentials were exposed in the past year, with infostealer malware responsible for a growing share. Session hijacking, credential stuffing, and infostealer malware represent the fastest-growing attack categories across all web platforms.
+> The Verizon DBIR (2025) found that credential abuse remains the most common initial access vector (22% of breaches), and the SpyCloud Annual Identity Exposure Report (2025) confirms the scale of the underlying problem: over 750 million credentials were exposed in the past year, with infostealer malware responsible for a growing share. Session hijacking, credential stuffing, and infostealer malware are prominent and growing attack categories across web platforms.
 
 
 ### 8.1 Multi-Factor Authentication
 
 -   Require multi-factor authentication (MFA) or two-factor authentication (2FA) for all administrator and editor accounts.
 
--   Standardize on `two-factor` for operational consistency across environments, unless an approved equivalent is required by platform constraints.
+-   Standardize on `two-factor` for operational consistency across environments, unless an approved equivalent is required by platform constraints. The plugin provides enrollment and the login challenge only; it has no built-in setting that requires 2FA for a role, so mandatory 2FA needs a separate enforcement control (for example, MFA enforced at the identity provider).
 
 -   Use TOTP-based authentication apps (e.g., Authy, Google Authenticator), hardware security keys (WebAuthn/FIDO2), or passkeys for phishing-resistant passwordless authentication. Passkey support in WordPress core is anticipated in a future release; plugins currently provide this capability.
 
 -   Do not use SMS-based 2FA, as it is vulnerable to SIM-swapping attacks.
 
--   Ensure 2FA secrets are encrypted at rest in the database.
+-   Protect 2FA secrets at rest, and state which layer does it. The `two-factor` plugin stores TOTP secrets unencrypted in user meta, so anyone who can read the database or a database backup can read them. Volume or database encryption protects against stolen disks, not against SQL injection or an exposed backup. Where the threat model requires field-level encryption, use an approved implementation that provides it; otherwise treat database access and backups as holding MFA secrets and protect them accordingly.
 
 -   Encourage all users, including contributors and subscribers, to enable 2FA.
 
@@ -336,7 +336,7 @@ This secondary layer of authentication mitigates the risk of session hijacking, 
 
 -   Limit the number of administrator accounts. Reserve the primary admin for emergency "break glass" scenarios.
 -   Create custom roles with only the capabilities each user group requires.
--   Define user roles and capabilities in a must-use plugin rather than the database, making them resistant to SQLi attacks and privilege escalation. (The WordPress roles API is not available during `wp-config.php` loading — roles must be registered on the `init` hook or later.)
+-   Keep the intended role and capability definitions in a version-controlled must-use plugin and reconcile the stored definitions against it. WordPress still stores roles in the database, and `add_role()` does nothing when a role already exists, so code alone does not prevent tampering; it provides an auditable source of truth that makes tampering detectable and reversible. User-to-role assignments remain database-backed and need separate review (see Benchmark §5.8). (The WordPress roles API is not available during `wp-config.php` loading — roles must be registered on the `init` hook or later.)
 -   Restrict administrator capabilities such as file upload, plugin/theme installation, and code editing by default.
 -   Implement IP or device-based allowlists for privileged accounts where feasible.
 -   Adopt trusted device verification for accounts with elevated privileges.
@@ -521,10 +521,10 @@ WordPress can be installed on virtually any server environment, but the hosting 
 -   Managed, automated patching for the full server stack (OS, PHP, database, web server).
 -   Multiple upstream security layers (network-level DDoS mitigation, WAF, intrusion detection).
 -   Automated, offsite backups with tested recovery procedures.
--   Relevant certifications: SOC 2, PCI DSS, GDPR-aligned data processing agreements, and for government/education, FedRAMP or equivalent.
+-   Relevant assurance evidence: ISO/IEC 27001 certification, a current SOC 2 attestation report, PCI DSS validation, GDPR-aligned data processing agreements, and for government/education, FedRAMP authorization or equivalent.
 -   An immutable filesystem where applicable, preventing runtime file modifications.
 
-Leading enterprise WordPress hosts hold certifications such as SOC 2, PCI DSS, and ISO 27001. WordPress VIP additionally holds FedRAMP authorization for United States federal projects. When evaluating hosting providers, verify that their specific certifications match your organization's compliance requirements.
+Leading enterprise WordPress hosts hold ISO/IEC 27001 certification, publish SOC 2 attestation reports, and maintain PCI DSS validation. WordPress VIP additionally holds FedRAMP authorization for United States federal projects. These are different kinds of evidence: a certification, an auditor's report on a defined system and period, a validation against a payment standard, and a government authorization. When evaluating hosting providers, check the scope and date of each and verify that it matches your organization's compliance requirements.
 
 ## 14. AI Integration Security in WordPress
 
@@ -550,11 +550,11 @@ For WordPress teams, shadow AI risks include content contributors pasting sensit
 When WordPress 7.0 AI infrastructure is in scope, treat connectors, prompt execution paths, and abilities registration as security-relevant application surfaces, not just developer ergonomics.
 
 -   **Data Privacy:** Ensure that sensitive site data or user information is not inadvertently sent to LLM providers during prompt processing. Use private or enterprise-tier AI services that guarantee data will not be used for model training.
--   **Prompt Injection:** Sanitize and validate all user inputs used in AI prompts to prevent injection attacks that could trick the AI into revealing sensitive information or executing unauthorized commands. This applies to AI-powered chatbots, search features, and content generation tools integrated with WordPress.
--   **Output Sanitization:** Treat GenAI-generated content as untrusted user input. Always sanitize and escape AI outputs before displaying them on the site or executing them as code (e.g., in automated site management tools).
+-   **Prompt Injection:** Input validation reduces prompt injection but cannot prevent it (see [OWASP LLM01:2025](https://genai.owasp.org/llmrisk/llm01-prompt-injection/)). Instructions can arrive as ordinary, well-formed text — typed by a user (direct injection) or carried in content the model retrieves, such as posts, comments, uploaded files, or web pages (indirect injection). Design on the assumption that the model can be manipulated: authorize every tool call and data access in deterministic code using the requesting user's capabilities, give AI integrations least-privilege credentials, keep the set of available operations narrow, and require human approval for high-impact actions. This applies to AI-powered chatbots, search features, and content generation tools integrated with WordPress.
+-   **Output Handling:** Treat GenAI-generated content as untrusted user input. Sanitize and escape AI output before displaying it on the site. Escaping does not make generated code safe to run: code or commands produced by a model (for example, in automated site management tools) need human review, validation against an allowlist of permitted operations, and execution in an isolated, least-privilege environment.
 -   **Access Controls for AI Systems:** Implement proper authentication and authorization for all AI model endpoints and APIs. IBM found that 97% of AI-related breaches involved systems lacking proper access controls — apply the same role-based access control principles used for WordPress itself to any AI integrations.
--   **Client-Side Prompt Execution:** Treat arbitrary browser-side prompt execution as a high-privilege pattern. The [WordPress 7.0 JavaScript AI API](https://make.wordpress.org/core/2026/03/24/introducing-the-ai-client-in-wordpress-7-0/) uses REST endpoints under the hood and is intentionally restricted because it can send arbitrary prompts to configured providers. For general plugin and site features, prefer narrow server-side REST endpoints with granular permission checks, and keep prompt construction, provider selection, and connector configuration scoped server-side.
--   **Abilities API Boundaries:** Treat the [Abilities API](https://make.wordpress.org/core/2026/03/24/client-side-abilities-api-in-wordpress-7-0/) as an authorization surface. Abilities exposed through `/wp-abilities/v1/` should follow the same least-privilege design expectations as any other capability-sensitive REST integration, especially where AI agents or workflow tools are involved.
+-   **Client-Side Prompt Execution:** Treat arbitrary browser-side prompt execution as a high-privilege pattern. The JavaScript AI client wrapper described in the [WordPress 7.0 AI Client dev note](https://make.wordpress.org/core/2026/03/24/introducing-the-ai-client-in-wordpress-7-0/) is distributed separately from core; it uses REST endpoints under the hood and is intentionally restricted because it can send arbitrary prompts to configured providers. For general plugin and site features, prefer narrow server-side REST endpoints with granular permission checks, and keep prompt construction, provider selection, and connector configuration scoped server-side.
+-   **Abilities API Boundaries:** Treat the [Abilities API](https://make.wordpress.org/core/2026/03/24/client-side-abilities-api-in-wordpress-7-0/) as an authorization surface. Abilities exposed through `/wp-abilities/v1/` should follow the same least-privilege design expectations as any other capability-sensitive REST integration, especially where AI agents or workflow tools are involved. WordPress 7.1 adds two things architects should account for. First, a `public` metadata flag (default `false`) now controls whether an ability is exposed to external clients; [the dev note is explicit](https://make.wordpress.org/core/2026/08/04/a-unified-public-exposure-flag-for-abilities-in-wordpress-7-1/) that exposure flags are not a security boundary, so authorization must live in each ability's `permission_callback`. Second, [execution lifecycle filters](https://make.wordpress.org/core/2026/07/29/new-execution-lifecycle-filters-for-the-abilities-api-in-wordpress-7-1/) let any active plugin short-circuit an ability before its permission check runs (`wp_pre_execute_ability`) or overturn a denial (`wp_ability_permission_result`). Treat code that hooks those filters as part of the authorization surface and review it accordingly (see Benchmark §11.4).
 -   **Copyright and Compliance:** Monitor AI-generated content for copyright compliance and ensure that AI-assisted workflows align with organizational and legal disclosure requirements.
 -   **API Key Management:** Securely store and manage API keys for GenAI services. Never expose keys in client-side code and rotate them regularly. In WordPress 7.0, the [Connectors API](https://make.wordpress.org/core/2026/03/18/introducing-the-connectors-api-in-wordpress-7-0/) can source credentials from environment variables, PHP constants, or the database. Prefer environment variables or `wp-config.php` constants. Database-backed connector secrets are masked in the interface but not encrypted, so they should be treated as a lower-assurance fallback rather than the preferred operational model.
 
@@ -611,7 +611,7 @@ Use this matrix to keep this guide aligned with the Benchmark and Operations Run
 | :--- | :--- | :--- | :--- |
 | File editor/mods | `DISALLOW_FILE_EDIT = true` | `DISALLOW_FILE_MODS = true` with external update pipeline | Dashboard updates retained where platform-managed patch cadence requires it |
 | REST API | Public content routes allowed; sensitive routes protected by auth/permissions | Block user-enumeration routes and harden custom endpoint callbacks | Global unauthenticated blocking only for private/intranet deployments |
-| XML-RPC | Keep only when required by integrations | Disable with `xmlrpc_enabled` and/or server-level block when unused | Route/IP allowlisting for required integrations |
+| XML-RPC | Keep only when required by integrations | Block at the web server when unused (`xmlrpc_enabled` alone is partial: authenticated methods only) | Route/IP allowlisting for required integrations |
 | File ownership | Documented least-privilege model per environment | Per-site process isolation and immutable deploy artifacts | Provider-constrained ownership with compensating controls |
 | SSH access | Key-only auth + host firewall/fail2ban | Non-standard SSH port for scanner-noise reduction | Managed-host controls where SSH is unavailable |
 
