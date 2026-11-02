@@ -4,6 +4,9 @@ All notable changes to the WordPress Security Hardening Guide.
 
 ## Unreleased
 
+### Added
+- §8.5: administrator accounts don't publish (Benchmark §5.2), and public author identities are kept separate from logins and email addresses (Benchmark §5.9). §7.2 notes that closing enumeration routes does not change the names WordPress publishes.
+
 ### Fixed
 - §14: corrected the description of the Abilities API lifecycle filters after verification against WordPress 7.1.3 core (`wp_pre_execute_ability` does not bypass the permission check on the REST run endpoint).
 

@@ -8,7 +8,7 @@ Last verified: 2026-10-07
 
 | Fact | Value | Verification command | Last changed |
 |---|---:|---|---|
-| Document lines | 627 | `wc -l WordPress-Security-Hardening-Guide.md` | 2026-06-14 |
+| Document lines | 629 | `wc -l WordPress-Security-Hardening-Guide.md` | 2026-11-02 |
 | Major sections (H2) | 17 | `grep -cE '^## ' WordPress-Security-Hardening-Guide.md` | v1.0 |
 | Subsections (H3) | 50 | `grep -cE '^### ' WordPress-Security-Hardening-Guide.md` | v1.0 |
 | OWASP Top 10 categories covered | 10 | A01–A10:2025 in section 4 | v1.0 |

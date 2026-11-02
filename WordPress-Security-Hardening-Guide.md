@@ -223,7 +223,7 @@ Set the following security-related constants in `wp-config.php`:
 
 -   Disable the built-in file editor.
 
--   Prevent username enumeration via the REST API and author archives.
+-   Prevent username enumeration via the REST API and author archives. Closing those routes does not change the names WordPress publishes in bylines, feeds and comments; see §8.5 for public author identities.
 
 -   Scope unauthenticated REST API access to only the public endpoints your site requires (e.g., posts listing for a public front-end). Avoid blanket API blocking unless architecture explicitly requires it.
 
@@ -335,6 +335,8 @@ This secondary layer of authentication mitigates the risk of session hijacking, 
 
 
 -   Limit the number of administrator accounts. Reserve the primary admin for emergency "break glass" scenarios.
+-   Whoever publishes gets an Author or Editor account, and the administrator account never publishes or comments while logged in. Bylines, feeds, comments and author URLs name the publishing account, so this keeps the public record pointing at accounts that cannot take over the site (see Benchmark §5.2).
+-   Keep public author identities separate from credentials. WordPress fills an account's display name, nickname and URL slug from its login unless told otherwise, so an email-address login ends up published in bylines, feeds, comments and author URLs. Every account also accepts its email address at login. Treat the login as private (an email address is fine), set the display name to the byline, and build the slug from the byline (see Benchmark §5.9).
 -   Create custom roles with only the capabilities each user group requires.
 -   Keep the intended role and capability definitions in a version-controlled must-use plugin and reconcile the stored definitions against it. WordPress still stores roles in the database, and `add_role()` does nothing when a role already exists, so code alone does not prevent tampering; it provides an auditable source of truth that makes tampering detectable and reversible. User-to-role assignments remain database-backed and need separate review (see Benchmark §5.8). (The WordPress roles API is not available during `wp-config.php` loading — roles must be registered on the `init` hook or later.)
 -   Restrict administrator capabilities such as file upload, plugin/theme installation, and code editing by default.
